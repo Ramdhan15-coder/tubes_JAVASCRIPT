@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        /* CSS Variables for a clean, consistent theme ( diambil dari dashboard.ejs ) */
+        :root {
+            --primary-dark-blue: #2c3e50;
+            --secondary-dark-blue: #34495e;
+            --accent-green: #2ecc71; /* Brighter green for highlights */
+            --accent-blue: #3498db;  /* Brighter blue for highlights */
+            --accent-orange: #e67e22; /* Orange for warning/attention */
+            --accent-red: #e74c3c; /* Red for destructive actions */
+            --light-grey: #ecf0f1;
+            --text-color-dark: #333;
+            --card-bg: #ffffff;
+            --border-color: #e0e0e0;
+            --shadow-light: 0 4px 10px rgba(0, 0, 0, 0.1);
+            --border-radius-main: 8px;
+            --nav-item-hover-bg: rgba(255, 255, 255, 0.1); /* Subtle hover for nav items */
+            --card-hover-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); /* Hover shadow for cards */
+
+            /* Tambahan untuk userlist.ejs */
+            --success-message-bg: #D4EDDA;
+            --success-message-text: #155724;
+            --error-message-bg: #F8D7DA;
+            --error-message-text: #721C24;
+            --table-header-bg: var(--secondary-dark-blue); /* Menggunakan warna dari tema utama */
+            --table-row-hover: #f1f1f1; /* Warna hover untuk baris tabel */
+
+            /* NEW: Search bar specific variables */
+            --search-bg: var(--secondary-dark-blue); /* Warna background search bar */
+            --search-input-bg: #2b3a4a; /* Warna input search bar */
+            --search-text-color: #ecf0f1; /* PERBAIKAN: Warna teks search bar jadi putih */
+            --search-border-color: #4a6572; /* Warna border search bar */
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            background-color: var(--light-grey); /* Mengikuti dashboard.ejs */
+            color: var(--text-color-dark); /* Mengikuti dashboard.ejs */
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* --- NAVBAR STYLE (DISAMAKAN DENGAN DASHBOARD.EJS) --- */
+        .admin-navbar {
+            background-color: var(--primary-dark-blue);
+            padding: 18px 30px; /* More padding for a substantial feel */
+            color: var(--light-grey);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow-light); /* Subtle shadow for depth */
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .admin-navbar .welcome-message {
+            font-size: 1.25em; /* Slightly larger welcome message */
+            font-weight: 500;
+            color: var(--accent-green); /* Highlight admin name */
+        }
+
+        .admin-navbar .nav-links { /* New wrapper for navigation links */
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px; /* Space between links */
+        }
+
+        .admin-navbar a {
+            color: var(--light-grey);
+            text-decoration: none;
+            padding: 10px 18px; /* More padding for clickable area */
+            border-radius: 6px; /* Slightly rounded corners */
+            font-weight: 400;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            display: flex; /* Allow icon and text to align */
+            align-items: center;
+            gap: 8px; /* Space between icon and text */
+        }
+
+        .admin-navbar a i { /* Style for Font Awesome icons */
+            font-size: 1.1em;
+        }
+
+        .admin-navbar a:hover,
+        .admin-navbar a.active-nav { 
+            background-color: var(--nav-item-hover-bg);
+            color: var(--accent-green); /* Green text on hover/active */
+        }
+        
+        /* Special style for Logout button */
+        .admin-navbar a.logout-btn {
+            background-color: var(--accent-red); /* Red for logout */
+            padding: 10px 20px;
+            font-weight: 500;
+            border-radius: 6px;
+            color: var(--light-grey); /* Ensure text is light on red bg */
+        }
+
+        .admin-navbar a.logout-btn:hover {
+            background-color: #c0392b; /* Darker red on hover */
+            color: var(--light-grey); /* Keep text white on hover */
+        }
+        /* --- AKHIR NAVBAR STYLE --- */
+
+
+        .admin-container {
+            flex-grow: 1;
+            padding: 30px; /* Mengikuti dashboard.ejs */
+            max-width: 1200px; /* Mengikuti userlist.ejs */
+            margin: 30px auto; /* Mengikuti dashboard.ejs */
+            background-color: var(--card-bg); /* Mengikuti dashboard.ejs */
+            border-radius: var(--border-radius-main); /* Mengikuti dashboard.ejs */
+            box-shadow: var(--shadow-light); /* Mengikuti dashboard.ejs */
+            min-height: calc(100vh - 120px); /* Adjust min-height to fill screen minus navbar/margins */
+            box-sizing: border-box; /* Pastikan padding masuk hitungan width/height */
+            color: var(--text-color-dark);
+        }
+
+        .admin-header {
+            margin-bottom: 25px; /* Mengikuti dashboard.ejs */
+            border-bottom: 2px solid var(--border-color); /* Mengikuti dashboard.ejs */
+            padding-bottom: 15px; /* Mengikuti dashboard.ejs */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .admin-header h1 {
+            margin: 0;
+            font-size: 2.2em; /* Mengikuti dashboard.ejs */
+            color: var(--primary-dark-blue); /* Mengikuti dashboard.ejs */
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Message Box Styling */
+        .message-box {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 500;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .success-message {
+            background-color: var(--success-message-bg);
+            color: var(--success-message-text);
+            border: 1px solid #C3E6CB;
+        }
+
+        .error-message {
+            background-color: var(--error-message-bg);
+            color: var(--error-message-text);
+            border: 1px solid #F5C6FB;
+        }
+
+        .message-box i {
+            font-size: 1.3em;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 18px; /* Disesuaikan agar konsisten dengan navbar */
+            font-size: 0.95em; /* Disesuaikan agar konsisten */
+            font-weight: 500; /* Disesuaikan */
+            text-align: center;
+            white-space: nowrap;
+            cursor: pointer;
+            user-select: none;
+            border: none;
+            border-radius: 6px;
+            text-decoration: none;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15); /* Shadow lebih halus */
+            box-sizing: border-box;
+        }
+
+        .btn:hover,
+        .btn:focus {
+            text-decoration: none;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+            outline: none;
+        }
+
+        .btn-add-new {
+            background-color: var(--accent-green); /* Mengikuti accent-green dari dashboard */
+            color: white;
+        }
+        .btn-add-new:hover { background-color: #27AE60; } /* Darker green */
+
+        .btn-edit {
+            background-color: var(--accent-blue); /* Mengikuti accent-blue */
+            color: white;
+            padding: 8px 12px; /* Lebih kecil untuk dalam tabel */
+            font-size: 0.85em;
+            border-radius: 4px;
+        }
+        .btn-edit:hover { background-color: #2980B9; }
+
+        .btn-delete {
+            background-color: var(--accent-red); /* Mengikuti accent-red */
+            color: white;
+            padding: 8px 12px; /* Lebih kecil untuk dalam tabel */
+            font-size: 0.85em;
+            border-radius: 4px;
+        }
+        .btn-delete:hover { background-color: #C0392B; }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 20px; /* Ada space sedikit setelah pesan */
+            background-color: var(--card-bg); /* Mengikuti card-bg */
+            border-radius: var(--border-radius-main); /* Mengikuti border-radius-main */
+            overflow: hidden; /* Penting untuk border-radius di tabel */
+            box-shadow: var(--shadow-light); /* Mengikuti shadow-light */
+        }
+
+        th, td {
+            text-align: left; /* Teks di kiri untuk tabel */
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border-color); /* Mengikuti border-color */
+            color: var(--text-color-dark); /* Mengikuti text-color-dark */
+            vertical-align: middle;
+        }
+
+        th {
+            background-color: var(--table-header-bg);
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.9em;
+        }
+
+        th:first-child { border-top-left-radius: var(--border-radius-main); }
+        th:last-child { border-top-right-radius: var(--border-radius-main); }
+        tr:last-child td { border-bottom: none; }
+        
+        tr:nth-child(even) { background-color: #fcfcfc; } /* Warna lebih terang */
+        tr:hover { background-color: var(--table-row-hover); cursor: pointer; }
+
+        .actions {
+            display: flex; /* Pakai flexbox untuk tombol aksi */
+            gap: 8px;
+            justify-content: center; /* Tombol di tengah sel */
+            align-items: center;
+            flex-wrap: wrap; /* Izinkan wrapping jika terlalu banyak tombol */
+        }
+
+        .actions form {
+            margin: 0;
+            display: contents; /* Penting agar form tidak merusak flex layout */
+        }
+        
+        /* NEW: Search form container */
+        .search-container {
+            background-color: var(--secondary-dark-blue); /* Warna mirip navbar */
+            padding: 20px 30px;
+            border-radius: var(--border-radius-main);
+            margin-bottom: 25px; /* Jarak dengan tabel */
+            box-shadow: var(--shadow-light);
+            display: flex; /* Untuk menempatkan input dan tombol sebaris */
+            align-items: center;
+            gap: 15px; /* Jarak antara input dan tombol */
+            flex-wrap: wrap; /* Izinkan wrapping di mobile */
+        }
+
+        .search-container input[type="text"] {
+            flex-grow: 1; /* Agar input mengisi ruang yang tersedia */
+            padding: 12px 15px;
+            border: 1px solid var(--search-border-color);
+            border-radius: 6px;
+            background-color: var(--search-input-bg);
+            color: var(--search-text-color); /* PERBAIKAN: Warna teks input search bar */
+            font-size: 1em;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+            box-sizing: border-box;
+            max-width: 400px; /* Batasi lebar input di desktop */
+        }
+
+        .search-container input[type="text"]:focus {
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.35);
+            background-color: #3e586c;
+            outline: none;
+        }
+
+        .search-container input[type="text"]::placeholder {
+            color: rgba(255, 255, 255, 0.6); /* PERBAIKAN: Warna placeholder search bar */
+        }
+
+        .search-button {
+            background-color: var(--accent-blue); /* Warna tombol search */
+            color: white;
+            padding: 12px 20px;
+            border-radius: 6px;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+        }
+
+        .search-button:hover {
+            background-color: #2980B9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+        }
+
+
+        /* Responsive Table (Optional but recommended) */
+        @media screen and (max-width: 768px) {
+            table {
+                border: 0;
+            }
+
+            table caption {
+                font-size: 1.3em;
+            }
+            
+            table thead {
+                border: none;
+                clip: rect(0 0 0 0);
+                height: 1px;
+                margin: -1px;
+                overflow: hidden;
+                padding: 0;
+                position: absolute;
+                width: 1px;
+            }
+            
+            table tr {
+                border-bottom: 3px solid var(--border-color);
+                display: block;
+                margin-bottom: .625em;
+                border-radius: var(--border-radius-main);
+                box-shadow: var(--shadow-light);
+                background-color: var(--card-bg);
+            }
+            
+            table td {
+                border-bottom: 1px solid var(--border-color);
+                display: block;
+                font-size: .8em;
+                text-align: right;
+                padding-left: 50%;
+                position: relative;
+            }
+            
+            table td::before {
+                content: attr(data-label);
+                position: absolute;
+                left: 0;
+                width: 45%;
+                padding-left: 15px;
+                font-weight: bold;
+                text-align: left;
+            }
+
+            table td:last-child {
+                border-bottom: 0;
+            }
+
+            .actions {
+                justify-content: flex-end; /* Aksi di kanan saat mobile */
+                padding-right: 15px;
+            }
+            .search-container {
+                flex-direction: column; /* Stack input and button vertically */
+                align-items: stretch; /* Stretch items to full width */
+            }
+            .search-container input[type="text"] {
+                max-width: 100%; /* Full width */
+            }
+            .search-button {
+                width: 100%; /* Full width button */
+            }
+        }
+
+        /* Responsive Adjustments (mengikuti dashboard.ejs) */
+        @media (max-width: 900px) {
+            .admin-navbar {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 15px 20px;
+            }
+            .admin-navbar .nav-links {
+                margin-top: 15px;
+                width: 100%;
+                justify-content: center; /* Center links when stacked */
+                gap: 10px;
+            }
+            .admin-navbar a {
+                padding: 8px 12px;
+                font-size: 0.95em;
+            }
+            .admin-container {
+                padding: 20px;
+                margin: 20px auto;
+            }
+            .admin-header h1 {
+                font-size: 1.8em;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .admin-navbar .welcome-message {
+                font-size: 1.1em;
+                text-align: center;
+                width: 100%;
+                margin-bottom: 10px;
+            }
+            .admin-navbar .nav-links {
+                flex-direction: column;
+                align-items: stretch; /* Stretch links to full width */
+            }
+            .admin-navbar a {
+                width: calc(100% - 20px); /* Full width with padding */
+                text-align: center;
+                justify-content: center; /* Center icon and text */
+            }
+            .admin-navbar a.logout-btn {
+                width: auto;
+                justify-content: center;
+            }
+            .admin-container {
+                padding: 15px;
+                margin: 15px auto;
+            }
+            .admin-header {
+                flex-direction: column;
+                align-items: flex-start;
+                text-align: left;
+            }
+            .admin-header h1 {
+                font-size: 1.5em;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="admin-navbar">
+        <div class="welcome-message">
+            <% if (typeof username !== 'undefined' && username) { %>
+                Halo, Admin <span style="font-weight: 700;"><%= username %></span>!
+            <% } else { %>
+                Admin Panel
+            <% } %>
+        </div>
+        <div class="nav-links"> <%# Gunakan div nav-links seperti di dashboard.ejs %>
+            <a href="/admin/dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+            <a href="/admin/users" class="active-nav"><i class="fas fa-users"></i> Kelola Users</a>
+            <a href="/admin/products"><i class="fas fa-box"></i> Kelola Products</a> <%# Icon box diganti untuk konsistensi %>
+            <a href="/admin/reviews"><i class="fas fa-star"></i> Kelola Review</a> <%# Icon star diganti untuk konsistensi %>
+            <a href="/admin/categories"><i class="fas fa-tags"></i> Kelola Kategori</a>
+            <a href="/admin/orders"><i class="fas fa-shopping-cart"></i> Kelola Pesanan</a>
+            <a href="/logout" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </div>
+    </div>
+
+    <div class="admin-container">
+        <div class="admin-header">
+            <h1><%= title %></h1>
+            <a href="/admin/users/new" class="btn btn-add-new">
+                <i class="fas fa-plus" style="margin-right: 8px;"></i>Tambah User
+            </a>
+        </div>
+
+        <% if (typeof successMessage !== 'undefined' && successMessage) { %>
+            <div class="message-box success-message">
+                <i class="fas fa-check-circle"></i> <%= successMessage %>
+            </div>
+        <% } %>
+
+        <% if (typeof errorMessage !== 'undefined' && errorMessage) { %>
+            <div class="message-box error-message">
+                <i class="fas fa-exclamation-triangle"></i> <%= errorMessage %>
+            </div>
+        <% } %>
+
+        <%# NEW: SEARCH FORM %>
+        <div class="search-container">
+            <form action="/admin/users" method="GET" style="display: flex; gap: 15px; width: 100%; flex-wrap: wrap; justify-content: center;">
+                <input type="text" name="search" placeholder="Cari berdasarkan Username, Email, atau Role..." value="<%= typeof searchTerm !== 'undefined' ? searchTerm : '' %>">
+                <button type="submit" class="search-button">
+                    <i class="fas fa-search" style="margin-right: 8px;"></i>Search
+                </button>
+            </form>
+        </div>
+
+        <div style="overflow-x:auto;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Tanggal Daftar</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% users.forEach(function(user) { %>
+                        <tr>
+                            <td data-label="ID"><%= user.user_id %></td>
+                            <td data-label="Username"><%= user.username %></td>
+                            <td data-label="Email"><%= user.email %></td>
+                            <td data-label="Role"><%= user.role_name %></td>
+                            <td data-label="Tanggal Daftar"><%= new Date(user.created_at).toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' }) %></td>
+                            <td data-label="Aksi" class="actions">
+                                <a href="/admin/users/edit/<%= user.user_id %>" class="btn btn-edit">Edit</a>
+                                <form action="/admin/users/delete/<%= user.user_id %>" method="POST">
+                                    <button type="submit" class="btn btn-delete" onclick="return confirm('Yakin mau hapus user <%= user.username %> ini?');">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</body>
+</html>

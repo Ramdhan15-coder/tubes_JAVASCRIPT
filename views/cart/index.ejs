@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="icon" href="https://example.com/favicon.ico" type="image/x-icon"> 
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body { 
+            font-family: 'Poppins', sans-serif;
+            padding-top: 70px; 
+            background-color: #f0f2f5; /* Warna latar belakang yang lebih lembut */
+        }
+
+        /* Navbar Styling (disamakan dengan halaman lain) */
+        .navbar {
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+        }
+        .navbar-brand {
+            font-weight: 700; 
+            font-size: 1.5rem;
+            color: #ffffff !important; 
+        }
+        .navbar-dark .navbar-nav .nav-link {
+            color: rgba(255, 255, 255, 0.85); 
+            transition: color 0.3s ease; 
+        }
+        .navbar-dark .navbar-nav .nav-link:hover {
+            color: #ffffff; 
+        }
+        .navbar-text {
+            color: rgba(255, 255, 255, 0.7); 
+            font-weight: 500;
+            display: flex; 
+            align-items: center;
+        }
+        .welcome-message-custom { 
+            display: flex; 
+            align-items: center; 
+            margin-right: auto; 
+        }
+        .welcome-message-custom .navbar-text {
+            margin-right: 0 !important; 
+        }
+        .badge-light {
+            background-color: #ffc107; 
+            color: #343a40; 
+            font-weight: 600;
+            margin-left: 5px; 
+        }
+        .nav-item .nav-link.active {
+            color: #ffc107 !important; /* Warna kuning untuk link aktif */
+            font-weight: 600;
+        }
+
+
+        /* General Styling for Alerts */
+        .alert {
+            border-radius: 8px;
+            font-weight: 500;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        /* Page Title */
+        h1.mb-4 {
+            font-weight: 600;
+            color: #343a40;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        h1.mb-4::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 80px;
+            height: 4px;
+            background-color: #007bff;
+            border-radius: 2px;
+        }
+
+        /* Cart Table Styling */
+        .table {
+            background-color: #ffffff; /* Background putih untuk tabel */
+            border-radius: 12px;
+            overflow: hidden; /* Penting untuk border-radius di tabel */
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05); /* Shadow lembut untuk tabel */
+        }
+        .table thead th {
+            background-color: #343a40; /* Warna header tabel sama dengan navbar */
+            color: #ffffff; /* Warna teks putih */
+            font-weight: 600;
+            border-bottom: none; /* Hapus border bawah di thead */
+            padding: 15px 20px; /* Padding lebih besar */
+        }
+        .table tbody tr {
+            transition: background-color 0.2s ease;
+        }
+        .table tbody tr:hover {
+            background-color: #f8f9fa; /* Warna hover pada baris tabel */
+        }
+        .table th, .table td {
+            vertical-align: middle;
+            padding: 15px 20px; /* Padding lebih besar untuk sel */
+            border-color: #e9ecef; /* Warna border sel lebih lembut */
+        }
+        .cart-item-image {
+            width: 90px; /* Ukuran gambar sedikit lebih besar */
+            height: 90px;
+            object-fit: cover;
+            margin-right: 15px;
+            border-radius: 8px; /* Sudut gambar lebih bulat */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            flex-shrink: 0; /* Agar gambar tidak mengecil di flexbox */
+        }
+        /* Styling untuk kolom produk (gambar + nama) */
+        .product-cell {
+            display: flex;
+            align-items: center;
+        }
+        .product-name-text {
+            font-weight: 600;
+            color: #343a40;
+        }
+
+        .quantity-input {
+            width: 80px; /* Ukuran input kuantitas sedikit lebih besar */
+            text-align: center;
+            border-radius: 5px;
+            border-color: #ced4da;
+            font-weight: 500;
+            margin-right: 8px; /* Jarak antara input dan tombol */
+        }
+        /* Perbaikan untuk form inline agar input dan tombol update sejajar */
+        .form-inline.quantity-form { 
+            display: flex; 
+            align-items: center; 
+            flex-wrap: nowrap; 
+        }
+        .form-inline.quantity-form .btn-info {
+            /* Samakan ukuran dengan tombol hapus (btn-danger btn-sm) */
+            padding: .25rem .5rem; /* Ukuran default btn-sm */
+            font-size: .875rem; /* Ukuran font default btn-sm */
+            line-height: 1.5; /* Line height default btn-sm */
+            border-radius: .2rem; /* Border radius default btn-sm */
+            min-width: 70px; /* Tambahkan min-width agar ukurannya lebih konsisten */
+            text-align: center; /* Pastikan teks di tengah */
+            display: inline-flex; /* Agar ikon dan teks sejajar */
+            align-items: center;
+            justify-content: center;
+        }
+        .form-inline.quantity-form .btn-info .fas {
+            margin-right: 5px; /* Jarak ikon dari teks */
+        }
+
+        .table td:nth-child(3), .table td:nth-child(5) { /* Harga Satuan & Subtotal */
+            font-weight: 600;
+            color: #28a745; /* Warna hijau untuk harga */
+            white-space: nowrap; /* Mencegah pecah baris */
+        }
+        /* Tambahkan CSS untuk format harga Rp */
+        .price-format {
+            display: inline-block; /* Agar Rp dan angka berada dalam satu baris logis */
+        }
+
+        .table td.actions {
+            white-space: nowrap; /* Mencegah tombol hapus pecah baris */
+        }
+        .btn-danger {
+            min-width: 70px; /* Samakan min-width dengan tombol update */
+            text-align: center;
+            display: inline-flex; /* Agar ikon dan teks sejajar */
+            align-items: center;
+            justify-content: center;
+        }
+        .btn-danger .fas {
+            margin-right: 5px;
+        }
+
+
+        /* Cart Summary Section */
+        .cart-summary {
+            background-color: #ffffff; /* Background putih untuk ringkasan */
+            padding: 25px; /* Padding lebih besar */
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .cart-summary h4 {
+            font-weight: 600;
+            color: #343a40;
+            margin-bottom: 15px;
+        }
+        .cart-summary h5 {
+            font-weight: 600;
+            color: #343a40;
+            font-size: 1.5em; /* Ukuran total lebih besar */
+        }
+        .cart-summary h5 span {
+            color: #007bff; /* Warna biru untuk total akhir */
+            font-size: 1.1em;
+        }
+        .cart-summary hr {
+            border-top: 1px solid #e9ecef; /* Garis pemisah lebih lembut */
+            margin-top: 15px;
+            margin-bottom: 20px;
+        }
+        .btn-checkout {
+            background-color: #007bff;
+            border-color: #007bff;
+            font-size: 1.1em;
+            padding: 12px 25px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0,123,255,0.2);
+        }
+        .btn-checkout:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+            box-shadow: 0 6px 15px rgba(0,123,255,0.3);
+            transform: translateY(-2px);
+        }
+
+        /* Other Buttons */
+        .btn-outline-secondary {
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        .btn-outline-secondary:hover {
+            background-color: #6c757d;
+            color: white;
+            box-shadow: 0 4px 10px rgba(108,117,125,0.2);
+        }
+        .btn-primary { /* Untuk tombol "Mulai Belanja" jika keranjang kosong */
+            border-radius: 8px;
+            font-weight: 600;
+            padding: 10px 25px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0,123,255,0.2);
+        }
+        .btn-primary:hover {
+            box-shadow: 0 6px 15px rgba(0,123,255,0.3);
+            transform: translateY(-2px);
+        }
+
+        .btn-info {
+            border-radius: 5px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        .btn-info:hover {
+            box-shadow: 0 4px 8px rgba(23,162,184,0.2);
+            transform: translateY(-1px);
+        }
+
+        /* Responsiveness adjustments */
+        @media (max-width: 768px) {
+            .table thead {
+                display: none; /* Sembunyikan header tabel di mobile */
+            }
+            .table tbody, .table tr, .table td {
+                display: block; /* Buat setiap sel menjadi blok */
+                width: 100%;
+            }
+            .table tr {
+                margin-bottom: 20px;
+                border: 1px solid #e9ecef;
+                border-radius: 12px;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+                padding: 15px;
+            }
+            .table td {
+                text-align: right !important; /* Konten sel rata kanan */
+                position: relative;
+                padding-left: 50% !important; /* Tambah padding kiri untuk label */
+                border-bottom: 1px dashed #e9ecef; /* Garis putus-putus */
+            }
+            .table td:last-child {
+                border-bottom: none;
+            }
+            .table td::before { /* Pseudo-element untuk label header */
+                content: attr(data-label);
+                position: absolute;
+                left: 15px;
+                width: calc(50% - 30px);
+                text-align: left;
+                font-weight: 600;
+                color: #343a40;
+            }
+            /* Label khusus untuk mobile table */
+            .table td:nth-child(1)::before { content: 'Gambar'; } /* Label untuk gambar */
+            .table td:nth-child(2)::before { content: 'Produk'; } /* Label untuk nama produk */
+            .table td:nth-child(3)::before { content: 'Harga Satuan'; }
+            .table td:nth-child(4)::before { content: 'Kuantitas'; }
+            .table td:nth-child(5)::before { content: 'Subtotal'; }
+            .table td:nth-child(6)::before { content: 'Aksi'; }
+
+            .cart-item-image {
+                display: block;
+                margin: 0 auto 10px auto; /* Pusatkan gambar di mobile */
+            }
+            .form-inline.quantity-form { 
+                justify-content: flex-end; /* Pusatkan form update ke kanan di mobile */
+                margin-top: 10px; 
+            }
+            .cart-summary {
+                margin-top: 30px;
+            }
+            .cart-summary h5 span {
+                font-size: 1em; 
+            }
+            .row.mt-4 > div {
+                margin-bottom: 20px; 
+            }
+            .row.mt-4 > div:last-child {
+                margin-bottom: 0;
+            }
+        }
+        /* Styling untuk footer */
+        footer small {
+            color: white; /* Font footer jadi putih */
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="/dashboard_user">Jaketku</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav ml-auto">
+                    <% if (typeof username !== 'undefined' && username) { %>
+                        <li class="nav-item welcome-message-custom"><span class="navbar-text mr-3"><i class="fas fa-user-circle mr-1"></i> Selamat datang, **<%= username %>**!</span></li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/keranjang">
+                                <i class="fas fa-shopping-cart"></i> Keranjang 
+                                <% if (typeof cartForNavbar !== 'undefined' && cartForNavbar.length > 0) { %>
+                                    <span class="badge badge-light"><%= cartForNavbar.length %></span>
+                                <% } %>
+                            </a>
+                        </li>
+                        <li class="nav-item"><a class="nav-link" href="/checkout/history"><i class="fas fa-history mr-1"></i> Riwayat Pesanan</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/logout"><i class="fas fa-sign-out-alt mr-1"></i> Logout</a></li>
+                    <% } else { %>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/keranjang">
+                                <i class="fas fa-shopping-cart"></i> Keranjang 
+                                <% if (typeof cartForNavbar !== 'undefined' && cartForNavbar.length > 0) { %>
+                                    <span class="badge badge-light"><%= cartForNavbar.length %></span>
+                                <% } %>
+                            </a>
+                        </li>
+                        <li class="nav-item"><a class="nav-link" href="/login"><i class="fas fa-sign-in-alt mr-1"></i> Login</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/register"><i class="fas fa-user-plus mr-1"></i> Register</a></li>
+                    <% } %>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4 mb-5">
+        <h1 class="mb-4"><%= title %></h1>
+
+        <%# Nampilin flash message kalau ada %>
+        <% if (typeof successMessage !== 'undefined' && successMessage) { %>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="fas fa-check-circle mr-2"></i> <%= successMessage %>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+        <% } %>
+        <% if (typeof errorMessage !== 'undefined' && errorMessage) { %>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="fas fa-exclamation-triangle mr-2"></i> <%= errorMessage %>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+        <% } %>
+
+        <% if (cartItems && cartItems.length > 0) { %>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Gambar</th> <%# Tambah tulisan "Gambar" di header %>
+                            <th scope="col">Produk</th>
+                            <th scope="col">Harga Satuan</th>
+                            <th scope="col">Kuantitas</th>
+                            <th scope="col">Subtotal</th>
+                            <th scope="col">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% cartItems.forEach(function(item) { %>
+                            <tr>
+                                <td><img src="<%= item.image_url ? item.image_url : 'https://via.placeholder.com/90x90/E0E0E0/666666?text=Produk' %>" alt="<%= item.name %>" class="cart-item-image"></td>
+                                <td class="product-name-text"><%= item.name %></td>
+                                <td data-label="Harga Satuan">Rp <span class="price-format"><%= new Intl.NumberFormat('id-ID').format(item.price) %></span></td>
+                                <td data-label="Kuantitas">
+                                    <form action="/keranjang/update/<%= item.id %>" method="POST" class="form-inline quantity-form"> 
+                                        <input type="number" class="form-control quantity-input" name="quantity" value="<%= item.quantity %>" min="1" required> 
+                                        <button type="submit" class="btn btn-info btn-sm"><i class="fas fa-sync-alt"></i> Update</button>
+                                    </form>
+                                </td>
+                                <td data-label="Subtotal">Rp <span class="price-format"><%= new Intl.NumberFormat('id-ID').format(item.price * item.quantity) %></span></td>
+                                <td data-label="Aksi" class="actions">
+                                    <form action="/keranjang/remove/<%= item.id %>" method="POST" style="display: inline;">
+                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Yakin mau hapus <%= item.name %> dari keranjang?');"><i class="fas fa-trash-alt"></i> Hapus</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-md-8 d-flex align-items-center"> 
+                    <a href="/dashboard_user" class="btn btn-outline-secondary"><i class="fas fa-arrow-left mr-2"></i> Lanjut Belanja</a>
+                </div>
+                <div class="col-md-4 cart-summary">
+                    <h4>Ringkasan Belanja</h4>
+                    <hr>
+                    <h5>Total: <span class="float-right font-weight-bold">Rp <%= new Intl.NumberFormat('id-ID').format(totalBelanja) %></span></h5>
+                    <a href="/checkout" class="btn btn-primary btn-block mt-3 btn-checkout"><i class="fas fa-shopping-bag mr-2"></i> Lanjut ke Checkout</a> 
+                </div>
+            </div>
+
+        <% } else { %>
+            <div class="alert alert-info text-center" role="alert">
+                <i class="fas fa-info-circle mr-2"></i> Keranjang belanja Anda masih kosong, Bro! Yuk, belanja dulu.
+            </div>
+            <div class="text-center"> 
+                <a href="/dashboard_user" class="btn btn-primary"><i class="fas fa-shopping-basket mr-2"></i> Mulai Belanja</a>
+            </div>
+        <% } %>
+    </div>
+
+    <footer class="py-4 bg-dark mt-auto">
+        <div class="container text-center">
+            <small>Copyright &copy; Jaketku 2025 - Ramdhan Rullyansyah</small>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

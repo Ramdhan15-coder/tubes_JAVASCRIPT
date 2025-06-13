@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title> <%# Ambil title dari controller %>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        /* CSS Variables for a clean, consistent theme */
+        :root {
+            --primary-dark-blue: #2c3e50;
+            --secondary-dark-blue: #34495e;
+            --accent-green: #2ecc71; /* Brighter green for highlights */
+            --accent-blue: #3498db;  /* Brighter blue for highlights */
+            --accent-orange: #e67e22; /* Orange for warning/attention */
+            --accent-red: #e74c3c; /* Red for destructive actions */
+            --light-grey: #ecf0f1;
+            --text-color-dark: #333;
+            --card-bg: #ffffff;
+            --border-color: #e0e0e0;
+            --shadow-light: 0 4px 10px rgba(0, 0, 0, 0.1);
+            --border-radius-main: 8px;
+            --nav-item-hover-bg: rgba(255, 255, 255, 0.1); /* Subtle hover for nav items */
+            --card-hover-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); /* Hover shadow for cards */
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif; /* Modern, readable font */
+            margin: 0;
+            background-color: var(--light-grey);
+            color: var(--text-color-dark);
+            line-height: 1.6;
+        }
+
+        .admin-navbar {
+            background-color: var(--primary-dark-blue);
+            padding: 18px 30px; /* More padding for a substantial feel */
+            color: var(--light-grey);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow-light); /* Subtle shadow for depth */
+            position: sticky; /* Make navbar sticky */
+            top: 0;
+            z-index: 1000; /* Ensure it stays on top */
+            flex-wrap: wrap; /* Allow wrapping on smaller screens */
+            gap: 15px; /* Space between nav items */
+        }
+
+        .admin-navbar .welcome-message {
+            font-size: 1.25em; /* Slightly larger welcome message */
+            font-weight: 500;
+            color: var(--accent-green); /* Highlight admin name */
+        }
+
+        .admin-navbar .nav-links { /* New wrapper for navigation links */
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px; /* Space between links */
+        }
+
+        .admin-navbar a {
+            color: var(--light-grey);
+            text-decoration: none;
+            padding: 10px 18px; /* More padding for clickable area */
+            border-radius: 6px; /* Slightly rounded corners */
+            font-weight: 400;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            display: flex; /* Allow icon and text to align */
+            align-items: center;
+            gap: 8px; /* Space between icon and text */
+        }
+
+        .admin-navbar a i { /* Style for Font Awesome icons */
+            font-size: 1.1em;
+        }
+
+        /* Style untuk link navbar aktif */
+        .admin-navbar a:hover,
+        .admin-navbar a.active-nav { 
+            background-color: var(--nav-item-hover-bg);
+            color: var(--accent-green); /* Green text on hover/active */
+        }
+        
+        /* Special style for Logout button */
+        .admin-navbar a.logout-btn {
+            background-color: var(--accent-red); /* Red for logout */
+            padding: 10px 20px;
+            font-weight: 500;
+            border-radius: 6px;
+            color: var(--light-grey); /* Ensure text is light on red bg */
+        }
+
+        .admin-navbar a.logout-btn:hover {
+            background-color: #c0392b; /* Darker red on hover */
+            color: var(--light-grey); /* Keep text white on hover */
+        }
+
+
+        .admin-container {
+            padding: 30px; /* More padding for content area */
+            max-width: 1200px; /* Max width for content for better readability */
+            margin: 30px auto; /* Center content */
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius-main);
+            box-shadow: var(--shadow-light);
+            min-height: calc(100vh - 120px); /* Adjust min-height to fill screen minus navbar/margins */
+        }
+
+        .admin-header {
+            margin-bottom: 25px; /* More space below header */
+            border-bottom: 2px solid var(--border-color); /* Lighter border */
+            padding-bottom: 15px; /* More padding below border */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap; /* Allow wrapping on smaller screens */
+            gap: 10px; /* Space between title and potential right-side elements */
+        }
+
+        .admin-header h1 {
+            margin: 0;
+            font-size: 2.2em; /* Larger heading */
+            color: var(--primary-dark-blue);
+            font-weight: 700;
+            display: flex; /* For aligning text and potential icon */
+            align-items: center;
+            gap: 10px; /* Space between title and icon/subtext */
+        }
+
+        .admin-header h1 .sub-heading { /* Style for "Dashboard" or other sub-headings */
+            font-size: 0.7em; /* Smaller size for "Dashboard" */
+            font-weight: 500;
+            color: #7f8c8d; /* Muted color */
+        }
+
+        .admin-content-summary p {
+            font-size: 1.05em;
+            color: var(--text-color-dark);
+            margin-bottom: 10px;
+        }
+
+        /* Dashboard Stats Cards */
+        .dashboard-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); /* Responsive grid columns */
+            gap: 25px; /* Space between cards */
+            margin-top: 30px; /* Space below intro text */
+        }
+
+        /* PERUBAHAN UTAMA UNTUK MENGHILANGKAN GARIS BAWAH DAN MEMPERCANTIK LINK KARTU */
+        .stat-card-link {
+            text-decoration: none; /* Pastikan tidak ada garis bawah */
+            color: inherit; /* Pastikan warna teks di dalamnya tidak berubah jadi biru link */
+            display: block; /* Agar link memenuhi seluruh area kartu */
+            /* Kita tidak perlu lagi mengatur hover di sini karena sudah diatur di .stat-card itu sendiri */
+        }
+
+        .stat-card {
+            background-color: var(--card-bg);
+            padding: 25px;
+            border-radius: var(--border-radius-main);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08); /* Softer shadow for cards */
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid var(--border-color); /* Subtle border for cards */
+            /* Perbaiki warna default untuk semua teks di kartu */
+            color: var(--primary-dark-blue); 
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px); /* Lift effect on hover */
+            box-shadow: var(--card-hover-shadow); /* More pronounced shadow */
+            cursor: pointer; /* Menunjukkan bahwa ini clickable */
+        }
+
+        .stat-card .icon {
+            font-size: 2.5em; /* Larger icons */
+            margin-bottom: 15px;
+            transition: color 0.3s ease; /* Transisi warna ikon saat hover */
+        }
+
+        .stat-card h3 {
+            margin: 0 0 8px 0;
+            color: var(--primary-dark-blue); /* Pastikan judul tetap gelap */
+            font-size: 1.2em;
+            font-weight: 600;
+        }
+
+        .stat-card .value {
+            font-size: 2em; /* Large value */
+            font-weight: 700;
+            /* Kita hapus color di sini, biar nanti diatur oleh specific class */
+            /* color: var(--primary-dark-blue); */ 
+            line-height: 1; /* Tighter line height for value */
+            text-decoration: none; /* Pastikan tidak ada garis bawah */
+            transition: color 0.3s ease; /* Transisi warna value saat hover */
+        }
+
+        /* Specific card colors and their hover effects */
+        .stat-card.users .icon, .stat-card.users .value { color: var(--accent-blue); }
+        .stat-card.products .icon, .stat-card.products .value { color: var(--accent-green); }
+        .stat-card.orders .icon, .stat-card.orders .value { color: var(--accent-orange); }
+        .stat-card.reviews .icon, .stat-card.reviews .value { color: #8e44ad; } /* Purple for reviews */
+
+        /* Optional: Hover effect for value to indicate clickability */
+        .stat-card-link:hover .stat-card.users .value { color: darken(var(--accent-blue), 10%); } /* Example with darken, might need direct color */
+        .stat-card-link:hover .stat-card.products .value { color: darken(var(--accent-green), 10%); }
+        .stat-card-link:hover .stat-card.orders .value { color: darken(var(--accent-orange), 10%); }
+        .stat-card-link:hover .stat-card.reviews .value { color: darken(#8e44ad, 10%); }
+
+        /* Untuk efek darken di CSS murni kita perlu hitung manual atau pakai HSL/RGB */
+        /* Contoh manual untuk warna hover value */
+        .stat-card-link:hover .stat-card.users .value { color: #2a7cbd; } /* Slightly darker blue */
+        .stat-card-link:hover .stat-card.products .value { color: #28a745; } /* Slightly darker green */
+        .stat-card-link:hover .stat-card.orders .value { color: #d66c1b; } /* Slightly darker orange */
+        .stat-card-link:hover .stat-card.reviews .value { color: #7a389e; } /* Slightly darker purple */
+
+
+        /* Responsive Adjustments */
+        @media (max-width: 900px) {
+            .admin-navbar {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 15px 20px;
+            }
+            .admin-navbar .nav-links {
+                margin-top: 15px;
+                width: 100%;
+                justify-content: center; /* Center links when stacked */
+                gap: 10px;
+            }
+            .admin-navbar a {
+                padding: 8px 12px;
+                font-size: 0.95em;
+            }
+            .admin-container {
+                padding: 20px;
+                margin: 20px auto;
+            }
+            .admin-header h1 {
+                font-size: 1.8em;
+            }
+            .dashboard-stats-grid {
+                grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); /* Adjust card size for smaller screens */
+            }
+            .stat-card {
+                padding: 20px;
+            }
+            .stat-card .icon {
+                font-size: 2em;
+            }
+            .stat-card .value {
+                font-size: 1.8em;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .admin-navbar .welcome-message {
+                font-size: 1.1em;
+                text-align: center;
+                width: 100%;
+                margin-bottom: 10px;
+            }
+            .admin-navbar .nav-links {
+                flex-direction: column;
+                align-items: stretch; /* Stretch links to full width */
+            }
+            .admin-navbar a {
+                width: calc(100% - 20px); /* Full width with padding */
+                text-align: center;
+                justify-content: center; /* Center icon and text */
+            }
+             .admin-navbar a.logout-btn { /* Ensure logout button also stretches */
+                width: auto; /* Let padding define width, or set explicitly if needed */
+                justify-content: center;
+            }
+            .admin-container {
+                padding: 15px;
+                margin: 15px auto;
+            }
+            .admin-header {
+                flex-direction: column;
+                align-items: flex-start;
+                text-align: left;
+            }
+            .admin-header h1 {
+                font-size: 1.5em;
+                width: 100%;
+            }
+            .dashboard-stats-grid {
+                grid-template-columns: 1fr; /* Stack cards vertically on very small screens */
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="admin-navbar">
+        <div class="welcome-message">
+            <% if (typeof username !== 'undefined' && username) { %>
+                Halo, Admin <span style="font-weight: 700;"><%= username %></span>!
+            <% } else { %>
+                Admin Panel
+            <% } %>
+        </div>
+        <div class="nav-links">
+            <a href="/admin/dashboard" class="active-nav"><i class="fas fa-tachometer-alt"></i> Dashboard</a> <%# Link ke Dashboard %>
+            <a href="/admin/users"><i class="fas fa-users"></i> Kelola Users</a>
+            <a href="/admin/products"><i class="fas fa-box"></i> Kelola Products</a>
+            <a href="/admin/reviews"><i class="fas fa-star"></i> Kelola Review</a>
+            <a href="/admin/categories"><i class="fas fa-tags"></i> Kelola Kategori</a>
+            <a href="/admin/orders"><i class="fas fa-shopping-cart"></i> Kelola Pesanan</a>
+            <a href="/logout" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </div>
+    </div>
+
+    <div class="admin-container">
+        <div class="admin-header">
+            <h1><%= title %> <span class="sub-heading">/ Dashboard</span></h1> <%# Tambah "Dashboard" di header %>
+        </div>
+        <div class="admin-content-summary">
+            <p>Selamat datang kembali di panel administrasi website <strong style="color: var(--primary-dark-blue);">Jaketku!</strong></p>
+            <p>Berikut adalah ringkasan cepat dari aktivitas dan data terbaru website Anda:</p>
+            
+            <div class="dashboard-stats-grid">
+                <a href="/admin/users" class="stat-card-link">
+                    <div class="stat-card users">
+                        <i class="fas fa-users icon"></i>
+                        <h3>Total Users</h3>
+                        <p class="value"><%= stats ? stats.totalUsers : 'N/A' %></p>
+                    </div>
+                </a>
+
+                <a href="/admin/products" class="stat-card-link">
+                    <div class="stat-card products">
+                        <i class="fas fa-box icon"></i>
+                        <h3>Total Products</h3>
+                        <p class="value"><%= stats ? stats.totalProducts : 'N/A' %></p>
+                    </div>
+                </a>
+
+                <a href="/admin/orders" class="stat-card-link">
+                    <div class="stat-card orders">
+                        <i class="fas fa-shopping-cart icon"></i>
+                        <h3>Pending Orders</h3>
+                        <p class="value"><%= stats ? stats.pendingOrders : 'N/A' %></p>
+                    </div>
+                </a>
+
+                <a href="/admin/reviews" class="stat-card-link">
+                    <div class="stat-card reviews">
+                        <i class="fas fa-star icon"></i>
+                        <h3>Total Reviews</h3>
+                        <p class="value"><%= stats ? stats.totalReviews : 'N/A' %></p>
+                    </div>
+                </a>
+            </div>
+            <p style="margin-top: 30px;">Gunakan menu navigasi di atas untuk menjelajahi fitur-fitur manajemen website.</p>
+        </div>
+    </div>
+
+</body>
+</html>

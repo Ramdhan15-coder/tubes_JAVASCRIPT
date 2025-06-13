@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selamat Datang di Toko Jaket Keren</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* CSS Variables - For consistent and easy theme management */
+        :root {
+            --primary-text-color: #ffffff;
+            --button-login-bg: #28a745;
+            --button-register-bg: #007bff;
+            --overlay-color: rgba(0, 0, 0, 0.65); /* Slightly darker overlay for better contrast */
+            --shadow-subtle: 0 6px 20px rgba(0, 0, 0, 0.2); /* Refined shadow */
+            --border-radius-card: 10px; /* Slightly smaller for cleaner look */
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://source.unsplash.com/1600x900/?jacket,fashion') center center / cover no-repeat fixed;
+            color: var(--primary-text-color);
+            text-align: center;
+            line-height: 1.6;
+            position: relative;
+        }
+
+        .container {
+            padding: 80px 70px;
+            background-color: rgba(255, 255, 255, 0.2); /* Dicerahkan: Nilai alpha ditingkatkan */
+            border-radius: var(--border-radius-card);
+            box-shadow: var(--shadow-subtle);
+            max-width: 650px;
+            width: 90%;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3); /* Border juga dicerahkan agar serasi */
+            animation: fadeInScale 0.8s ease-out forwards;
+            position: relative;
+            z-index: 1;
+        }
+
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        h1 {
+            color: var(--primary-text-color);
+            margin-bottom: 20px;
+            font-size: 2.8em;
+            font-weight: 700;
+            letter-spacing: -0.8px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        p {
+            font-size: 1.15em;
+            color: rgba(255, 255, 255, 0.85);
+            margin-bottom: 35px;
+            font-weight: 400;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .buttons a {
+            text-decoration: none;
+            color: var(--primary-text-color);
+            padding: 14px 30px;
+            border-radius: 30px;
+            font-size: 1.05em;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            box-shadow: 0 5px 12px rgba(0, 0, 0, 0.2);
+            background-image: linear-gradient(45deg, var(--button-login-bg), #38c172);
+            border: none;
+        }
+
+        .buttons a.btn-register {
+            background-image: linear-gradient(45deg, var(--button-register-bg), #66afe9);
+        }
+
+        .buttons a:hover {
+            transform: translateY(-2px) scale(1.01);
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
+            filter: brightness(1.05);
+        }
+
+        /* Responsive adjustments for overall tighter feel */
+        @media (max-width: 768px) {
+            .container {
+                padding: 50px 50px;
+                max-width: 550px;
+            }
+            h1 {
+                font-size: 2.5em;
+                margin-bottom: 15px;
+            }
+            p {
+                font-size: 1.1em;
+                margin-bottom: 30px;
+            }
+            .buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+            .buttons a {
+                width: 80%;
+                margin: 0 auto;
+                padding: 12px 25px;
+                font-size: 1em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 40px 25px;
+                width: 95%;
+            }
+            h1 {
+                font-size: 2em;
+                margin-bottom: 15px;
+            }
+            p {
+                font-size: 0.95em;
+                margin-bottom: 25px;
+            }
+            .buttons a {
+                width: 90%;
+                padding: 10px 20px;
+                font-size: 0.95em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Selamat Datang di Web Jaketku!</h1>
+        <p>Temukan koleksi jaket terbaik untuk gaya Anda, mulai dari desain klasik hingga tren terbaru yang selalu up-to-date.</p>
+        <div class="buttons">
+            <a href="/login" class="btn-login">Masuk Sekarang</a>
+            <a href="/register" class="btn-register">Buat Akun Baru</a>
+        </div>
+    </div>
+</body>
+</html>

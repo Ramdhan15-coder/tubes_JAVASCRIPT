@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body { 
+      padding-top: 70px; 
+      background-color: #f8f9fa;
+    }
+    .success-container {
+      max-width: 700px;
+      margin: 40px auto;
+      padding: 30px;
+      background-color: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    .success-icon {
+      font-size: 4em;
+      color: #28a745;
+      margin-bottom: 20px;
+    }
+    .payment-instructions, .upload-form-section, .payment-proof-section {
+      margin-top: 30px;
+      padding: 20px;
+      background-color: #e9ecef;
+      border-radius: 5px;
+      text-align: left;
+    }
+    .payment-instructions strong {
+      display: block;
+      margin-bottom: 5px;
+    }
+    .uploaded-proof-img {
+      max-width: 100%;
+      height: auto;
+      margin-top: 15px;
+      border: 1px solid #ddd;
+      padding: 5px;
+    }
+    .alert { margin-top: 20px; } /* Pastikan alert notifikasi juga terlihat jelas */
+  </style>
+</head>
+<body>
+
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <div class="container">
+      <a class="navbar-brand" href="/dashboard_user">Jaketku</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav ml-auto">
+          <% if (typeof username !== 'undefined' && username) { %>
+            <li class="nav-item" style="margin-right: auto;"><span class="navbar-text mr-3">Selamat datang, <%= username %>!</span></li>
+            <li class="nav-item"><a class="nav-link" href="/keranjang">Keranjang <% if (typeof cartForNavbar !== 'undefined' && cartForNavbar.length > 0) { %><span class="badge badge-light"><%= cartForNavbar.length %></span><% } %></a></li>
+            <li class="nav-item"><a class="nav-link" href="/checkout/history">Riwayat Pesanan</a></li> <%# TAMBAHKAN INI %>
+            <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
+          <% } else { %>
+            <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
+          <% } %>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="success-container">
+      <div class="success-icon">✓</div>
+      <h1><%= title %></h1>
+
+      <%# Notifikasi Flash Message (dari proses upload atau lainnya) %>
+      <% if (typeof successMessage !== 'undefined' && successMessage) { %>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+          <%= successMessage %>
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+      <% } %>
+      <% if (typeof errorMessage !== 'undefined' && errorMessage) { %>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          <%= errorMessage %>
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+      <% } %>
+
+      <% if (typeof order !== 'undefined' && order) { %>
+        <p>Nomor Pesanan Anda: <strong>#<%= order.order_id %></strong></p>
+        <p>Total Tagihan: <strong style="color: #dc3545;">Rp <%= new Intl.NumberFormat('id-ID').format(order.total_amount) %></strong></p>
+
+        <div class="payment-instructions">
+          <h5>Instruksi Pembayaran:</h5>
+          <p>Silakan lakukan pembayaran sejumlah total tagihan ke salah satu rekening berikut:</p>
+          <p>
+            <strong>Bank BCA:</strong> 123-456-7890 a/n Jaketku Keren Sejahtera<br>
+            <strong>Bank Mandiri:</strong> 098-765-4321 a/n PT Jaketku Jaya Abadi
+          </p>
+          <p>Status Pesanan Saat Ini: <span class="badge badge-warning"><%= order.status.replace('_', ' ').toUpperCase() %></span></p>
+        </div>
+
+        <%# BAGIAN UPLOAD BUKTI PEMBAYARAN %>
+        <% if (order.status === 'pending_payment') { %>
+          <div class="upload-form-section">
+            <h5>Upload Bukti Pembayaran Anda</h5>
+            <form action="/checkout/upload-bukti/<%= order.order_id %>" method="POST" enctype="multipart/form-data">
+              <div class="form-group">
+                <label for="buktiPembayaran">Pilih file gambar (JPG, PNG, maks 5MB):</label>
+                <input type="file" class="form-control-file" id="buktiPembayaran" name="buktiPembayaran" accept="image/jpeg, image/png, image/gif" required>
+              </div>
+              <button type="submit" class="btn btn-info">Upload Bukti</button>
+            </form>
+          </div>
+        <% } else if (order.payment_proof_url) { %>
+          <div class="payment-proof-section">
+            <h5>Bukti Pembayaran Anda</h5>
+            <p>Status: <span class="badge badge-info"><%= order.status.replace('_', ' ').toUpperCase() %></span>. Terima kasih, bukti pembayaran Anda sedang kami verifikasi.</p>
+            <img src="<%= order.payment_proof_url %>" alt="Bukti Pembayaran untuk Order #<%= order.order_id %>" class="uploaded-proof-img">
+          </div>
+        <% } else if (order.status !== 'pending_payment' && !order.payment_proof_url) { %>
+            <div class="payment-proof-section">
+                <p>Status Pesanan: <span class="badge badge-secondary"><%= order.status.replace('_', ' ').toUpperCase() %></span></p>
+                <p><em>Anda belum mengupload bukti pembayaran atau pesanan sedang dalam status lain.</em></p>
+            </div>
+        <% } %>
+        <%# SELESAI BAGIAN UPLOAD %>
+
+      <% } else { %>
+        <p class="text-danger">Detail pesanan tidak dapat dimuat.</p>
+      <% } %>
+
+      <div class="mt-4">
+        <a href="/dashboard_user" class="btn btn-primary">Lanjutkan Belanja</a>
+        <%# Nanti bisa ada link ke halaman "Pesanan Saya" %>
+        <%# <a href="/pesanan" class="btn btn-outline-secondary ml-2">Lihat Pesanan Saya</a> %>
+      </div>
+    </div>
+  </div>
+
+  <footer class="py-4 bg-light mt-auto">
+    <div class="container text-center">
+      <small>Copyright &copy; Jaketku 2025 - Ramdhan Rullyansyah & Gemini</small>
+    </div>
+  </footer>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body { 
+      padding-top: 70px; 
+      background-color: #f8f9fa;
+    }
+    .order-summary-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid #eee;
+    }
+    .order-summary-item:last-child {
+      border-bottom: none;
+    }
+    .order-summary-item .item-name {
+      font-size: 0.9em;
+    }
+    .order-summary-item .item-qty {
+      font-size: 0.9em;
+      color: #6c757d;
+    }
+    .total-row {
+      font-weight: bold;
+      font-size: 1.2em;
+      margin-top: 10px;
+    }
+    .alert { margin-bottom: 20px; } /* Style buat alert biar ada margin bawah */
+  </style>
+</head>
+<body>
+
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <div class="container">
+      <a class="navbar-brand" href="/dashboard_user">Jaketku</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav ml-auto">
+          <% if (typeof username !== 'undefined' && username) { %>
+            <li class="nav-item" style="margin-right: auto;"><span class="navbar-text mr-3">Selamat datang, <%= username %>!</span></li>
+            <li class="nav-item"><a class="nav-link" href="/keranjang">Keranjang <% if (typeof cartForNavbar !== 'undefined' && cartForNavbar.length > 0) { %><span class="badge badge-light"><%= cartForNavbar.length %></span><% } %></a></li>
+            <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
+          <% } else { %>
+            <%# Pengguna tidak login tidak seharusnya bisa sampai ke checkout %>
+            <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
+          <% } %>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container mt-4 mb-5">
+    <h1 class="mb-4"><%= title %></h1>
+
+    <%# Nampilin flash message kalau ada %>
+    <% if (typeof successMessage !== 'undefined' && successMessage) { %>
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <%= successMessage %>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      </div>
+    <% } %>
+    <% if (typeof errorMessage !== 'undefined' && errorMessage) { %>
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <%= errorMessage %>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      </div>
+    <% } %>
+
+    <div class="row">
+      <div class="col-md-7 mb-4">
+        <h3>Informasi Pengiriman</h3>
+        <form action="/checkout/place_order" method="POST">
+          <div class="form-group">
+            <label for="shippingFullName">Nama Lengkap Penerima</label>
+            <input type="text" class="form-control" id="shippingFullName" name="shippingFullName" value="<%= username || '' %>" required>
+          </div>
+          <div class="form-group">
+            <label for="shippingAddress">Alamat Lengkap Pengiriman</label>
+            <textarea class="form-control" id="shippingAddress" name="shippingAddress" rows="4" placeholder="Nama Jalan, Nomor Rumah, RT/RW, Kelurahan, Kecamatan, Kota/Kabupaten, Provinsi, Kode Pos" required></textarea>
+          </div>
+          <div class="form-group">
+            <label for="shippingPhoneNumber">Nomor Telepon Penerima</label>
+            <input type="tel" class="form-control" id="shippingPhoneNumber" name="shippingPhoneNumber" placeholder="Contoh: 081234567890" required>
+          </div>
+          <div class="form-group">
+            <label for="orderNotes">Catatan untuk Penjual (Opsional)</label>
+            <textarea class="form-control" id="orderNotes" name="orderNotes" rows="2"></textarea>
+          </div>
+          
+          <hr>
+          <h3>Metode Pembayaran</h3>
+          <p>Saat ini kami hanya menerima pembayaran via Bank Transfer.</p>
+          <p>Instruksi pembayaran akan diberikan setelah Anda mengkonfirmasi pesanan.</p>
+          
+          <button type="submit" class="btn btn-primary btn-lg btn-block mt-4">Konfirmasi Pesanan & Lanjut Bayar</button>
+        </form>
+      </div>
+
+      <div class="col-md-5">
+        <div class="card">
+          <div class="card-header">
+            <h4>Ringkasan Pesanan Anda</h4>
+          </div>
+          <div class="card-body">
+            <% if (cartItems && cartItems.length > 0) { %>
+              <% cartItems.forEach(function(item) { %>
+                <div class="order-summary-item">
+                  <div>
+                    <span class="item-name"><%= item.name %></span><br>
+                    <span class="item-qty">Qty: <%= item.quantity %></span>
+                  </div>
+                  <span>Rp <%= new Intl.NumberFormat('id-ID').format(item.price * item.quantity) %></span>
+                </div>
+              <% }); %>
+              <hr>
+              <div class="order-summary-item total-row">
+                <span>Total Belanja:</span>
+                <span>Rp <%= new Intl.NumberFormat('id-ID').format(totalBelanja) %></span>
+              </div>
+            <% } else { %>
+              <p>Keranjang Anda kosong.</p>
+            <% } %>
+          </div>
+        </div>
+        <a href="/keranjang" class="btn btn-outline-secondary btn-block mt-3">&laquo; Kembali ke Keranjang</a>
+      </div>
+    </div>
+  </div>
+
+  <footer class="py-4 bg-light mt-auto">
+    <div class="container text-center">
+      <small>Copyright &copy; Jaketku 2025 - Ramdhan Rullyansyah</small>
+    </div>
+  </footer>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

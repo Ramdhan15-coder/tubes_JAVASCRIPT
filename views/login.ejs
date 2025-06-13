@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        /* CSS Variables - For consistent and easy theme management */
+        :root {
+            --primary-text-color: #ffffff; /* White text for contrast on dark background */
+            --button-login-bg: #28a745; /* Green */
+            --overlay-color: rgba(0, 0, 0, 0.65); /* Slightly darker overlay for better contrast */
+            --shadow-subtle: 0 6px 20px rgba(0, 0, 0, 0.2); /* Refined shadow */
+            --border-radius-card: 10px; /* Slightly smaller for cleaner look */
+            --input-bg: rgba(255, 255, 255, 0.1); /* More subtle transparent input background */
+            --input-border: rgba(255, 255, 255, 0.25); /* Lighter border for input */
+            --input-focus-glow: rgba(255, 255, 255, 0.4); /* Refined glow on focus */
+            --input-text-color: #ffffff; /* White text for input */
+            --placeholder-color: rgba(255, 255, 255, 0.6); /* Lighter placeholder */
+            --error-bg: rgba(255, 0, 0, 0.15); /* More subtle transparent red for error */
+            --error-text: #ffe0e0; /* Light red for error text */
+            --success-bg: rgba(0, 255, 0, 0.15); /* More subtle transparent green for success */
+            --success-text: #e0ffe0; /* Light green for success text */
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://source.unsplash.com/1600x900/?login,jacket,fashion') center center / cover no-repeat fixed;
+            color: var(--primary-text-color);
+            text-align: center;
+            line-height: 1.6;
+            position: relative;
+        }
+
+        .container {
+            padding: 35px 45px;
+            background-color: rgba(255, 255, 255, 0.2); /* Dicerahkan: Nilai alpha ditingkatkan */
+            border-radius: var(--border-radius-card);
+            box-shadow: var(--shadow-subtle);
+            max-width: 420px;
+            width: 90%;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3); /* Border juga dicerahkan agar serasi */
+            animation: fadeInScale 0.8s ease-out forwards;
+            position: relative;
+            z-index: 1;
+            text-align: left;
+        }
+
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        h1 {
+            color: var(--primary-text-color);
+            margin-bottom: 25px;
+            font-size: 2.2em;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: var(--primary-text-color);
+            font-size: 0.9em;
+            text-shadow: 0 1px 1px rgba(0, 0, 0, 0.15);
+        }
+
+        /* --- Perubahan untuk input password dengan ikon mata (Disesuaikan kembali) --- */
+        .password-input-wrapper {
+            position: relative;
+            /* margin-bottom dihapus dari sini agar input yang punya margin-bottom */
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 11px 14px;
+            margin-bottom: 18px; /* Dikembalikan ke input langsung */
+            background-color: var(--input-bg);
+            border: 1px solid var(--input-border);
+            border-radius: 7px;
+            font-size: 0.95em;
+            color: var(--input-text-color);
+            box-sizing: border-box;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+            padding-right: 45px; /* Tetap perlu padding kanan untuk ikon */
+        }
+
+        input[type="text"]::placeholder,
+        input[type="password"]::placeholder {
+            color: var(--placeholder-color);
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            outline: none;
+            border-color: var(--primary-text-color);
+            box-shadow: 0 0 0 2px var(--input-focus-glow);
+            background-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            /* top dan transform disesuaikan agar posisinya pas dengan margin-bottom input */
+            top: calc(50% - 9px); /* 50% dari tinggi input, minus setengah dari margin-bottom */
+            transform: translateY(-50%); /* Untuk centering ikon */
+            cursor: pointer;
+            color: var(--placeholder-color); /* Warna ikon mata */
+            transition: color 0.2s ease;
+            font-size: 1.1em;
+            /* Tambahan untuk memastikan z-indexnya lebih tinggi dari input agar bisa diklik */
+            z-index: 2;
+        }
+
+        .toggle-password:hover {
+            color: var(--primary-text-color); /* Warna ikon mata saat hover */
+        }
+        /* --- Akhir perubahan untuk input password --- */
+
+
+        button[type="submit"] {
+            width: 100%;
+            padding: 14px 30px;
+            color: var(--primary-text-color);
+            border: none;
+            border-radius: 30px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 5px 12px rgba(0, 0, 0, 0.2);
+            background-image: linear-gradient(45deg, var(--button-login-bg), #38c172);
+        }
+
+        button[type="submit"]:hover {
+            transform: translateY(-2px) scale(1.01);
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
+            filter: brightness(1.05);
+        }
+
+        .message {
+            padding: 9px 12px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 0.85em;
+            font-weight: 500;
+            background-color: var(--error-bg);
+            color: var(--error-text);
+            border: 1px solid var(--error-text);
+            backdrop-filter: blur(3px);
+            -webkit-backdrop-filter: blur(3px);
+        }
+
+        .success-message {
+            background-color: var(--success-bg);
+            color: var(--success-text);
+            border: 1px solid var(--success-text);
+        }
+
+        p.register-link {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 0.88em;
+            color: rgba(255, 255, 255, 0.8);
+            text-shadow: 0 1px 1px rgba(0, 0, 0, 0.15);
+        }
+
+        p.register-link a {
+            color: var(--primary-text-color);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s ease, text-shadow 0.2s ease;
+        }
+
+        p.register-link a:hover {
+            color: #c0e0ff;
+            text-decoration: underline;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+        }
+
+        /* Responsive adjustments for overall tighter feel */
+        @media (max-width: 768px) {
+            .container {
+                padding: 30px 40px;
+                max-width: 380px;
+            }
+            h1 {
+                font-size: 2em;
+            }
+            input[type="text"],
+            input[type="password"] {
+                padding: 10px 12px;
+                font-size: 0.9em;
+            }
+            button[type="submit"] {
+                padding: 12px 25px;
+                font-size: 0.95em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 25px 20px;
+                width: 95%;
+            }
+            h1 {
+                font-size: 1.7em;
+                margin-bottom: 20px;
+            }
+            input[type="text"],
+            input[type="password"] {
+                padding: 8px 10px;
+                margin-bottom: 15px; /* Sesuaikan lagi untuk mobile */
+                font-size: 0.85em;
+            }
+            button[type="submit"] {
+                padding: 10px;
+                font-size: 0.9em;
+            }
+            .message {
+                padding: 7px 10px;
+                font-size: 0.8em;
+            }
+            p.register-link {
+                font-size: 0.85em;
+            }
+            /* Sesuaikan posisi ikon mata untuk mobile juga */
+            .toggle-password {
+                top: calc(50% - 7.5px); /* Setengah dari margin-bottom 15px */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Masuk ke Akun Anda</h1>
+
+        <% if (typeof successMessage !== 'undefined' && successMessage) { %>
+            <div class="message success-message"><%= successMessage %></div>
+        <% } %>
+
+        <%# TAMBAHKAN BLOK INI UNTUK MENAMPILKAN PESAN ERROR LOGIN %>
+        <% if (typeof loginError !== 'undefined' && loginError) { %>
+            <div class="message error-message">
+                <%= loginError %>
+            </div>
+        <% } %>
+
+        <form action="/login" method="POST">
+            <div>
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required autocomplete="username" placeholder="Masukkan username Anda">
+            </div>
+            <div>
+                <label for="password">Password:</label>
+                <div class="password-input-wrapper">
+                    <input type="password" id="password" name="password" required autocomplete="current-password" placeholder="Masukkan password Anda">
+                    <i class="fas fa-eye toggle-password" id="togglePassword"></i>
+                </div>
+            </div>
+            <button type="submit">Masuk</button>
+        </form>
+        <p class="register-link">
+            Belum punya akun? <a href="/register">Daftar di sini</a>
+        </p>
+    </div>
+
+    <script>
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordField = document.getElementById('password');
+
+        togglePassword.addEventListener('click', function () {
+            // Toggle the type attribute
+            const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordField.setAttribute('type', type);
+            
+            // Toggle the eye icon
+            this.classList.toggle('fa-eye');
+            this.classList.toggle('fa-eye-slash');
+        });
+    </script>
+</body>
+</html>

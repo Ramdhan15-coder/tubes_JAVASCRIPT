@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Pengguna - Jaketku</title>
+    <link rel="icon" href="https://example.com/favicon.ico" type="image/x-icon"> 
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        /* Mengatur ulang font default body */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0f2f5; /* Warna latar belakang yang lebih lembut */
+        }
+
+        /* Navbar Styling */
+        .navbar {
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Tambah shadow agar terlihat lebih tebal */
+        }
+        .navbar-brand {
+            font-weight: 700; /* Tebalkan logo Jaketku */
+            font-size: 1.5rem;
+            color: #ffffff !important; /* Pastikan warna tetap putih */
+        }
+        .navbar-dark .navbar-nav .nav-link {
+            color: rgba(255, 255, 255, 0.85); /* Warna link lebih terang */
+            transition: color 0.3s ease; /* Transisi halus saat hover */
+        }
+        .navbar-dark .navbar-nav .nav-link:hover {
+            color: #ffffff; /* Warna putih penuh saat hover */
+        }
+        .navbar-text {
+            color: rgba(255, 255, 255, 0.7); /* Warna teks selamat datang lebih lembut */
+            font-weight: 500;
+        }
+        .welcome-message-custom {
+            display: flex; /* Menggunakan flexbox untuk penataan item nav */
+            align-items: center; /* Pusatkan secara vertikal */
+        }
+        .badge-light {
+            background-color: #ffc107; /* Warna badge kuning untuk keranjang */
+            color: #343a40; /* Warna teks badge gelap */
+            font-weight: 600;
+            margin-left: 5px; /* Sedikit spasi dari teks "Keranjang" */
+        }
+
+        /* Hero Section - Perubahan Warna Background Lebih Terang (Coklat Muda) */
+        .hero-section {
+            background-color: #5b5b3d7e; /* Warna coklat muda lebih terang dari #8F8B74 */
+            color: #343a40; /* Ubah warna teks jadi gelap agar kontras dengan background terang */
+            padding: 80px 0;
+            text-align: center;
+            position: relative; 
+            z-index: 1; 
+
+            margin-top: -70px; /* Negatif dari tinggi navbar fixed-top (default Bootstrap 70px) */
+            padding-top: 150px; /* Tambah padding atas untuk mengompensasi navbar + padding asli */
+
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .hero-section h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+        .hero-section p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        /* Notifikasi Flash Message */
+        .alert {
+            border-radius: 8px;
+            font-weight: 500;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-top: 20px; 
+        }
+
+        /* Judul Halaman Utama */
+        h1.text-center {
+            font-weight: 600;
+            color: #343a40;
+            margin-bottom: 30px;
+            position: relative; 
+            padding-bottom: 10px;
+            margin-top: 40px; 
+        }
+        h1.text-center::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: 0;
+            transform: translateX(-50%);
+            width: 80px; 
+            height: 4px;
+            background-color: #007bff; /* Warna garis biru */
+            border-radius: 2px;
+        }
+
+        /* Product Card Styling */
+        .product-card {
+            margin-bottom: 30px;
+        }
+        .card {
+            border: none; 
+            border-radius: 12px; 
+            transition: transform 0.3s ease, box-shadow 0.3s ease; 
+            overflow: hidden; 
+        }
+        .card:hover {
+            transform: translateY(-5px); 
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15); 
+        }
+        .card-img-top {
+            width: 100%;
+            height: 220px; 
+            object-fit: cover;
+            border-top-left-radius: 12px; 
+            border-top-right-radius: 12px;
+        }
+        .card-body {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            background-color: #343a40; /* Warna gelap seperti navbar */
+            color: #f8f9fa; /* Warna teks default jadi putih */
+        }
+        .card-title {
+            font-weight: 600;
+            color: #ffffff; /* Judul produk jadi putih */
+            font-size: 1.25rem; 
+            margin-bottom: 8px;
+        }
+        .card-text small {
+            color: rgba(255, 255, 255, 0.7); 
+            font-size: 0.85em; 
+            font-weight: 500;
+        }
+        h6.font-weight-bold {
+            color: #28a745; 
+            font-size: 1.15rem; 
+            margin-top: 10px;
+            margin-bottom: 5px;
+        }
+        .stok-text {
+            font-size: 0.85em; 
+            color: #ffc107; 
+            font-weight: 500;
+            margin-top: 0; 
+            margin-bottom: 15px; 
+        }
+        .mt-auto.text-center {
+            padding-top: 15px; 
+            border-top: 1px solid rgba(255, 255, 255, 0.1); 
+            display: flex; 
+            justify-content: center; 
+            flex-wrap: wrap; 
+        }
+
+        /* Button Styling */
+        .btn-outline-primary {
+            color: #007bff;
+            border-color: #007bff;
+            transition: all 0.3s ease;
+            margin: 5px; 
+        }
+        .btn-outline-primary:hover {
+            background-color: #007bff;
+            color: white;
+            box-shadow: 0 4px 10px rgba(0,123,255,0.25);
+        }
+        .btn-success {
+            background-color: #28a745;
+            border-color: #28a745;
+            transition: all 0.3s ease;
+            margin: 5px; 
+        }
+        .btn-success:hover {
+            background-color: #218838;
+            border-color: #1e7e34;
+            box-shadow: 0 4px 10px rgba(40,167,69,0.25);
+        }
+        .btn-sm {
+            padding: .375rem .9rem; 
+            font-size: .875rem;
+            border-radius: .3rem; 
+        }
+
+        /* Footer Styling */
+        footer {
+            background-color: #343a40 !important; 
+            color: #f8f9fa; 
+            padding: 30px 0;
+            margin-top: 60px; 
+            box-shadow: 0 -2px 4px rgba(0,0,0,0.05);
+        }
+        footer small {
+            font-size: 0.9em;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Responsiveness adjustments */
+        @media (max-width: 768px) {
+            .hero-section {
+                padding: 60px 0;
+                margin-top: -56px; 
+                padding-top: 116px; 
+            }
+            .hero-section h1 {
+                font-size: 2.2rem;
+            }
+            .hero-section p {
+                font-size: 1rem;
+            }
+            .product-card {
+                margin-bottom: 20px;
+            }
+            .card-img-top {
+                height: 180px;
+            }
+            .card-title {
+                font-size: 1.1rem;
+            }
+            h6.font-weight-bold {
+                font-size: 1rem;
+            }
+            .stok-text {
+                font-size: 0.8em;
+            }
+            .btn-sm {
+                padding: .3rem .75rem;
+                font-size: .8rem;
+            }
+            h1.text-center {
+                margin-top: 30px; 
+            }
+            .mt-auto.text-center {
+                flex-direction: column; 
+            }
+            .btn-outline-primary, .btn-success {
+                width: 90%; 
+                max-width: 200px; 
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="/dashboard_user">Jaketku</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav ml-auto">
+                    <% if (typeof username !== 'undefined' && username) { %>
+                        <li class="nav-item welcome-message-custom"><span class="navbar-text mr-3"><i class="fas fa-user-circle mr-1"></i> Selamat datang, **<%= username %>**!</span></li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/keranjang">
+                                <i class="fas fa-shopping-cart"></i> Keranjang 
+                                <% if (typeof cartForNavbar !== 'undefined' && cartForNavbar.length > 0) { %>
+                                    <span class="badge badge-light"><%= cartForNavbar.length %></span>
+                                <% } %>
+                            </a>
+                        </li>
+                        <li class="nav-item"><a class="nav-link" href="/checkout/history"><i class="fas fa-history mr-1"></i> Riwayat Pesanan</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/logout"><i class="fas fa-sign-out-alt mr-1"></i> Logout</a></li>
+                    <% } else { %>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/keranjang">
+                                <i class="fas fa-shopping-cart"></i> Keranjang 
+                                <% if (typeof cartForNavbar !== 'undefined' && cartForNavbar.length > 0) { %>
+                                    <span class="badge badge-light"><%= cartForNavbar.length %></span>
+                                <% } %>
+                            </a>
+                        </li>
+                        <li class="nav-item"><a class="nav-link" href="/login"><i class="fas fa-sign-in-alt mr-1"></i> Login</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/register"><i class="fas fa-user-plus mr-1"></i> Register</a></li>
+                    <% } %>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="hero-section">
+        <div class="container">
+            <h1>Temukan Jaket Impianmu di Jaketku!</h1>
+            <p>Koleksi terbaru, gaya terkini, harga terbaik. Siap menemani setiap petualanganmu.</p>
+        </div>
+    </div>
+
+    <div class="container mt-4">
+        <% if (typeof successMessage !== 'undefined' && successMessage) { %>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="fas fa-check-circle mr-2"></i> <%= successMessage %>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        <% } %>
+        <% if (typeof errorMessage !== 'undefined' && errorMessage) { %>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="fas fa-exclamation-triangle mr-2"></i> <%= errorMessage %>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        <% } %>
+
+        <h1 class="mb-4 text-center">Koleksi Jaket Terbaru</h1>
+
+        <div class="row">
+            <% if (typeof products !== 'undefined' && products.length > 0) { %>
+                <% products.forEach(function(product) { %>
+                    <div class="col-lg-3 col-md-4 col-sm-6 product-card">
+                        <div class="card h-100 shadow-sm">
+                            <img class="card-img-top" src="<%= product.image_url ? product.image_url : 'https://via.placeholder.com/400x220/E0E0E0/666666?text=Gambar+Tidak+Tersedia' %>" alt="<%= product.product_name %>">
+                            <div class="card-body d-flex flex-column"> 
+                                <h5 class="card-title"><%= product.product_name %></h5>
+                                <p class="card-text"><small class="text-muted"><%= product.category_name ? product.category_name : 'Tanpa Kategori' %></small></p>
+                                <h6 class="font-weight-bold">Rp <%= new Intl.NumberFormat('id-ID').format(product.price) %></h6>
+                                <p class="stok-text">Stok: **<%= product.stock_quantity %>**</p> 
+                                
+                                <div class="mt-auto text-center"> 
+                                    <a href="/produk/<%= product.product_id %>" class="btn btn-outline-primary btn-sm mr-2"><i class="fas fa-info-circle mr-1"></i> Lihat Detail</a> 
+                                    <form action="/keranjang/add/<%= product.product_id %>" method="POST" style="display: inline;">
+                                        <button type="submit" class="btn btn-success btn-sm">
+                                            <i class="fas fa-cart-plus mr-1"></i> Tambah ke Keranjang
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <% }); %>
+            <% } else { %>
+                <div class="col-12">
+                    <div class="alert alert-info text-center" role="alert">
+                        <i class="fas fa-info-circle mr-2"></i> Yah, belum ada produk jaket yang bisa ditampilin nih, Bro. Tunggu update dari admin ya!
+                    </div>
+                </div>
+            <% } %>
+        </div>
+    </div>
+
+    <footer class="py-4 bg-dark mt-auto">
+        <div class="container text-center">
+            <small>Copyright &copy; Jaketku 2025 - Ramdhan Rullyansyah</small>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

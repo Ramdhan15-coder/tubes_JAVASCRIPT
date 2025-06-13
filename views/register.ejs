@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrasi User Baru</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        /* CSS Variables - For consistent and easy theme management */
+        :root {
+            --primary-text-color: #ffffff; /* White text for contrast on dark background */
+            --button-register-bg: #007bff; /* Blue for register button */
+            --overlay-color: rgba(0, 0, 0, 0.65); /* Dark overlay for image */
+            --shadow-subtle: 0 6px 20px rgba(0, 0, 0, 0.2); /* Refined shadow */
+            --border-radius-card: 10px; /* Cleaner look */
+            
+            /* --- Perubahan untuk input fields --- */
+            --input-bg-white: #ffffff; /* Warna putih solid untuk background input */
+            --input-border-light: #cccccc; /* Border terang untuk input */
+            --input-focus-glow: rgba(0, 123, 255, 0.4); /* Glow biru saat focus */
+            --input-text-dark: #333333; /* Warna teks gelap untuk input */
+            --placeholder-dark: #888888; /* Placeholder gelap */
+            /* --- Akhir perubahan input fields --- */
+
+            --error-bg: rgba(255, 0, 0, 0.15); /* More subtle transparent red for error */
+            --error-text: #ffe0e0; /* Light red for error text */
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://source.unsplash.com/1600x900/?register,jacket,fashion') center center / cover no-repeat fixed;
+            color: var(--primary-text-color);
+            text-align: center;
+            line-height: 1.6;
+            position: relative;
+        }
+
+        .container {
+            padding: 35px 45px;
+            background-color: rgba(255, 255, 255, 0.2); /* Consistent bright glassmorphism background */
+            border-radius: var(--border-radius-card);
+            box-shadow: var(--shadow-subtle);
+            max-width: 420px;
+            width: 90%;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            animation: fadeInScale 0.8s ease-out forwards;
+            position: relative;
+            z-index: 1;
+            text-align: left;
+        }
+
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        h1 {
+            color: var(--primary-text-color);
+            margin-bottom: 25px;
+            font-size: 2.2em;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: var(--primary-text-color);
+            font-size: 0.9em;
+            text-shadow: 0 1px 1px rgba(0, 0, 0, 0.15);
+        }
+
+        /* --- Perubahan untuk input password dengan ikon mata (Disesuaikan kembali) --- */
+        .password-input-wrapper {
+            position: relative;
+            /* margin-bottom dihapus dari sini agar input yang punya margin-bottom */
+            /* Tidak perlu margin-bottom di wrapper karena input di dalamnya sudah ada */
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
+            padding: 11px 14px;
+            margin-bottom: 18px; /* Dikembalikan ke input langsung */
+            background-color: var(--input-bg-white); /* Background putih solid */
+            border: 1px solid var(--input-border-light); /* Border terang */
+            border-radius: 7px;
+            font-size: 0.95em;
+            color: var(--input-text-dark); /* Teks gelap */
+            box-sizing: border-box;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+            padding-right: 45px; /* Tetap perlu padding kanan untuk ikon */
+        }
+
+        input[type="text"]::placeholder,
+        input[type="email"]::placeholder,
+        input[type="password"]::placeholder {
+            color: var(--placeholder-dark); /* Placeholder gelap */
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="password"]:focus {
+            outline: none;
+            border-color: var(--button-register-bg); /* Border warna biru register saat focus */
+            box-shadow: 0 0 0 2px var(--input-focus-glow); /* Glow biru */
+            background-color: var(--input-bg-white); /* Tetap putih saat focus */
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: calc(50% - 9px); /* 50% dari tinggi input, minus setengah dari margin-bottom (18px/2 = 9px) */
+            transform: translateY(-50%); /* Untuk centering ikon */
+            cursor: pointer;
+            color: var(--placeholder-dark); /* Warna ikon mata agar senada dengan placeholder */
+            transition: color 0.2s ease;
+            font-size: 1.1em;
+            z-index: 2; /* Pastikan ikon berada di atas input */
+        }
+
+        .toggle-password:hover {
+            color: var(--input-text-dark); /* Warna ikon mata saat hover, senada dengan teks input */
+        }
+        /* --- Akhir perubahan untuk input password --- */
+
+
+        button[type="submit"] {
+            width: 100%;
+            padding: 14px 30px;
+            color: var(--primary-text-color);
+            border: none;
+            border-radius: 30px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 5px 12px rgba(0, 0, 0, 0.2);
+            background-image: linear-gradient(45deg, var(--button-register-bg), #66afe9);
+        }
+
+        button[type="submit"]:hover {
+            transform: translateY(-2px) scale(1.01);
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
+            filter: brightness(1.05);
+        }
+
+        .message {
+            padding: 9px 12px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 0.85em;
+            font-weight: 500;
+            background-color: var(--error-bg);
+            color: var(--error-text);
+            border: 1px solid var(--error-text);
+            backdrop-filter: blur(3px);
+            -webkit-backdrop-filter: blur(3px);
+        }
+
+        p.login-link {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 0.88em;
+            color: rgba(255, 255, 255, 0.8);
+            text-shadow: 0 1px 1px rgba(0, 0, 0, 0.15);
+        }
+
+        p.login-link a {
+            color: var(--primary-text-color);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s ease, text-shadow 0.2s ease;
+        }
+
+        p.login-link a:hover {
+            color: #c0e0ff;
+            text-decoration: underline;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .container {
+                padding: 30px 40px;
+                max-width: 380px;
+            }
+            h1 {
+                font-size: 2em;
+            }
+            input[type="text"],
+            input[type="email"],
+            input[type="password"] {
+                padding: 10px 12px;
+                font-size: 0.9em;
+            }
+            button[type="submit"] {
+                padding: 12px 25px;
+                font-size: 0.95em;
+            }
+            .toggle-password {
+                top: calc(50% - 9px); /* Konsisten dengan desktop */
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 25px 20px;
+                width: 95%;
+            }
+            h1 {
+                font-size: 1.7em;
+                margin-bottom: 20px;
+            }
+            input[type="text"],
+            input[type="email"],
+            input[type="password"] {
+                padding: 8px 10px;
+                margin-bottom: 15px;
+                font-size: 0.85em;
+            }
+            button[type="submit"] {
+                padding: 10px;
+                font-size: 0.9em;
+            }
+            .message {
+                padding: 7px 10px;
+                font-size: 0.8em;
+            }
+            p.login-link {
+                font-size: 0.85em;
+            }
+            .toggle-password {
+                top: calc(50% - 7.5px); /* Setengah dari margin-bottom 15px */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Daftar Akun Baru</h1>
+
+        <% if (typeof error !== 'undefined' && error) { %>
+            <div class="message error-message">
+                <%= error %>
+            </div>
+        <% } %>
+
+        <form action="/register" method="POST">
+            <div>
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required autocomplete="username" placeholder="Buat username Anda">
+            </div>
+            <div>
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required autocomplete="email" placeholder="Masukkan alamat email Anda">
+            </div>
+            <div>
+                <label for="password">Password:</label>
+                <div class="password-input-wrapper">
+                    <input type="password" id="password" name="password" required autocomplete="new-password" placeholder="Buat password baru">
+                    <i class="fas fa-eye toggle-password" id="togglePassword"></i>
+                </div>
+            </div>
+            <% /*
+            <div>
+                <label for="confirm_password">Konfirmasi Password:</label>
+                <div class="password-input-wrapper">
+                    <input type="password" id="confirm_password" name="confirm_password" required autocomplete="new-password" placeholder="Konfirmasi password Anda">
+                    <i class="fas fa-eye toggle-password" id="toggleConfirmPassword"></i>
+                </div>
+            </div>
+            */ %>
+            <button type="submit">Daftar</button>
+        </form>
+        <p class="login-link">
+            Sudah punya akun? <a href="/login">Masuk di sini</a>
+        </p>
+    </div>
+
+    <script>
+        // Menggunakan fungsi untuk menangani toggle password agar bisa dipakai ulang
+        function setupPasswordToggle(toggleId, passwordFieldId) {
+            const toggleButton = document.getElementById(toggleId);
+            const passwordInput = document.getElementById(passwordFieldId);
+
+            if (toggleButton && passwordInput) {
+                toggleButton.addEventListener('click', function () {
+                    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                    passwordInput.setAttribute('type', type);
+                    
+                    this.classList.toggle('fa-eye');
+                    this.classList.toggle('fa-eye-slash');
+                });
+            }
+        }
+
+        // Panggil fungsi untuk setiap field password yang ada
+        setupPasswordToggle('togglePassword', 'password');
+        // Jika ada field konfirmasi password, panggil juga:
+        // setupPasswordToggle('toggleConfirmPassword', 'confirm_password');
+    </script>
+</body>
+</html>

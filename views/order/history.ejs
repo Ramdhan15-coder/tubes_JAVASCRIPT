@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body { 
+      padding-top: 70px; 
+      background-color: #f8f9fa;
+    }
+    .table th, .table td {
+      vertical-align: middle;
+    }
+    .status-badge {
+      font-size: 0.9em;
+      padding: 0.3em 0.6em;
+    }
+    /* Style untuk status yang berbeda */
+    .status-pending_payment { background-color: #ffc107; color: #212529; } /* Kuning */
+    .status-menunggu_konfirmasi { background-color: #17a2b8; color: white; } /* Biru Info */
+    .status-pembayaran_diterima { background-color: #28a745; color: white; } /* Hijau Sukses */
+    .status-diproses { background-color: #007bff; color: white; } /* Biru Primary */
+    .status-dikirim { background-color: #fd7e14; color: white; } /* Oranye */
+    .status-selesai { background-color: #6c757d; color: white; } /* Abu-abu Secondary */
+    .status-dibatalkan { background-color: #dc3545; color: white; } /* Merah Bahaya */
+  </style>
+</head>
+<body>
+
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <div class="container">
+      <a class="navbar-brand" href="/dashboard_user">Jaketku</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav ml-auto">
+          <% if (typeof username !== 'undefined' && username) { %>
+            <li class="nav-item" style="margin-right: auto;"><span class="navbar-text mr-3">Selamat datang, <%= username %>!</span></li>
+            <li class="nav-item"><a class="nav-link" href="/keranjang">Keranjang <% if (typeof cartForNavbar !== 'undefined' && cartForNavbar.length > 0) { %><span class="badge badge-light"><%= cartForNavbar.length %></span><% } %></a></li>
+            <li class="nav-item"><a class="nav-link active" href="/checkout/history">Riwayat Pesanan</a></li> <%# Link Riwayat aktif %>
+            <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
+          <% } else { %>
+            <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
+            <li class="nav-item"><a class="nav-link" href="/register">Register</a></li>
+          <% } %>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container mt-4 mb-5">
+    <h1 class="mb-4"><%= title %></h1>
+
+    <%# Nampilin flash message kalau ada %>
+    <% if (typeof successMessage !== 'undefined' && successMessage) { %>
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <%= successMessage %>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      </div>
+    <% } %>
+    <% if (typeof errorMessage !== 'undefined' && errorMessage) { %>
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <%= errorMessage %>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      </div>
+    <% } %>
+
+    <% if (orders && orders.length > 0) { %>
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead class="thead-light">
+            <tr>
+              <th>ID Pesanan</th>
+              <th>Tanggal Pesan</th>
+              <th>Total Bayar</th>
+              <th>Status</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% orders.forEach(function(order) { %>
+              <tr>
+                <td>#<%= order.order_id %></td>
+                <td><%= new Date(order.order_date).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' }) %></td>
+                <td>Rp <%= new Intl.NumberFormat('id-ID').format(order.total_amount) %></td>
+                <td>
+                  <span class="badge status-badge status-<%= order.status.toLowerCase().replace(/\s+/g, '_') %>">
+                    <%= order.status.replace('_', ' ').toUpperCase() %>
+                  </span>
+                </td>
+                <td>
+                  <a href="/checkout/sukses/<%= order.order_id %>" class="btn btn-info btn-sm">Lihat Detail</a>
+                </td>
+              </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+    <% } else { %>
+      <div class="alert alert-info" role="alert">
+        Anda belum memiliki riwayat pesanan. Yuk, mulai belanja!
+      </div>
+      <a href="/dashboard_user" class="btn btn-primary">&laquo; Mulai Belanja</a>
+    <% } %>
+  </div>
+
+  <footer class="py-4 bg-light mt-auto">
+    <div class="container text-center">
+      <small>Copyright &copy; Jaketku 2025 - Ramdhan Rullyansyah & Gemini</small>
+    </div>
+  </footer>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

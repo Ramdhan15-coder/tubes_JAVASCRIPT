@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        /* CSS Variables for a clean, consistent theme (disinkronkan dengan dashboard.ejs) */
+        :root {
+            --primary-dark-blue: #2c3e50;
+            --secondary-dark-blue: #34495e; /* Warna mirip navbar untuk card dalam */
+            --accent-green: #2ecc71; /* Brighter green for highlights */
+            --accent-blue: #3498db;  /* Brighter blue for highlights */
+            --accent-orange: #e67e22; /* Orange for warning/attention */
+            --accent-red: #e74c3c; /* Red for destructive actions */
+            --light-grey: #ecf0f1;
+            --text-color-dark: #333;
+            --card-bg: #ffffff; /* Warna putih untuk container utama */
+            --border-color: #e0e0e0;
+            --shadow-light: 0 4px 10px rgba(0, 0, 0, 0.1);
+            --border-radius-main: 8px;
+            --nav-item-hover-bg: rgba(255, 255, 255, 0.1); /* Subtle hover for nav items */
+            --card-hover-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); /* Hover shadow for cards */
+
+            /* Tambahan dari userlist.ejs / createuser.ejs */
+            --success-message-bg: #D4EDDA;
+            --success-message-text: #155724;
+            --error-message-bg: #F8D7DA;
+            --error-message-text: #721C24;
+
+            /* NEW: Text color for dark background card */
+            --dark-card-text: #ecf0f1; /* Lebih terang untuk teks di latar belakang gelap */
+            --dark-card-input-bg: #2b3a4a; /* Warna input di dalam card gelap */
+            --dark-card-border: #4a6572; /* Border input di dalam card gelap */
+            /* Tambahan warna placeholder untuk input gelap */
+            --dark-placeholder-color: rgba(255, 255, 255, 0.6);
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            background-color: var(--light-grey);
+            color: var(--text-color-dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* --- NAVBAR STYLE (DISAMAKAN DENGAN DASHBOARD.EJS) --- */
+        .admin-navbar {
+            background-color: var(--primary-dark-blue);
+            padding: 18px 30px;
+            color: var(--light-grey);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow-light);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .admin-navbar .welcome-message {
+            font-size: 1.25em;
+            font-weight: 500;
+            color: var(--accent-green);
+        }
+
+        .admin-navbar .nav-links {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .admin-navbar a {
+            color: var(--light-grey);
+            text-decoration: none;
+            padding: 10px 18px;
+            border-radius: 6px;
+            font-weight: 400;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .admin-navbar a i {
+            font-size: 1.1em;
+        }
+
+        .admin-navbar a:hover,
+        .admin-navbar a.active-nav { 
+            background-color: var(--nav-item-hover-bg);
+            color: var(--accent-green);
+        }
+        
+        .admin-navbar a.logout-btn {
+            background-color: var(--accent-red);
+            padding: 10px 20px;
+            font-weight: 500;
+            border-radius: 6px;
+            color: var(--light-grey);
+        }
+
+        .admin-navbar a.logout-btn:hover {
+            background-color: #c0392b;
+            color: var(--light-grey);
+        }
+        /* --- AKHIR NAVBAR STYLE --- */
+
+
+        .admin-container {
+            flex-grow: 1;
+            padding: 30px;
+            max-width: 1000px;
+            width: calc(100% - 80px);
+            margin: 30px auto;
+            background-color: var(--card-bg); /* Ini tetap putih (card luar) */
+            border-radius: var(--border-radius-main);
+            box-shadow: var(--shadow-light);
+            min-height: calc(100vh - 120px);
+            box-sizing: border-box;
+            color: var(--text-color-dark);
+        }
+
+        .admin-header {
+            margin-bottom: 25px;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .admin-header h1 {
+            margin: 0;
+            font-size: 2.2em;
+            color: var(--primary-dark-blue);
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        /* Message Box Styling */
+        .message-box {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 500;
+            animation: fadeIn 0.5s ease-out;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .success-message {
+            background-color: var(--success-message-bg);
+            color: var(--success-message-text);
+            border: 1px solid #C3E6CB;
+        }
+
+        .error-message {
+            background-color: var(--error-message-bg);
+            color: var(--error-message-text);
+            border: 1px solid #F5C6CB;
+        }
+
+        .message-box i {
+            font-size: 1.3em;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- PERUBAHAN DI SINI: WARNA FORM CARD DALAM --- */
+        .form-card {
+            background-color: var(--secondary-dark-blue); /* Warna mirip navbar untuk card dalam */
+            padding: 30px 40px;
+            border-radius: var(--border-radius-main);
+            box-shadow: var(--shadow-light); /* Shadow tetap ringan */
+            border: 1px solid var(--border-color); /* Border tetap ada */
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            /* Kita akan membuat input password group ini relatif */
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark-card-text); /* Warna teks label berubah jadi terang */
+            font-size: 1.05em;
+        }
+
+        /* Umum untuk semua input */
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            margin-bottom: 0; /* Semua input di dalam form-group tidak punya margin-bottom default */
+            border: 1px solid var(--dark-card-border); /* Border input gelap */
+            border-radius: 6px;
+            background-color: var(--dark-card-input-bg); /* Background input lebih gelap */
+            color: var(--dark-card-text); /* Warna teks input terang */
+            font-size: 1em;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        /* Atur margin-bottom untuk form-group secara keseluruhan */
+        .form-group:not(:last-child) { /* Tambahkan margin-bottom ke semua form-group kecuali yang terakhir */
+            margin-bottom: 20px;
+        }
+        /* Override untuk form-group yang memiliki password-input-container */
+        .form-group:has(.password-input-container) {
+            margin-bottom: 20px; /* Pastikan group password punya margin-bottom yang konsisten */
+        }
+
+
+        .form-group input::placeholder {
+            color: var(--dark-placeholder-color); /* Warna placeholder terang, sedikit transparan */
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: var(--accent-blue); /* Tetap accent-blue saat fokus */
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.35); /* Shadow fokus sedikit lebih jelas */
+            background-color: #3e586c; /* Sedikit lebih terang dari default input dark card */
+            outline: none;
+        }
+
+        /* PERBAIKAN UTAMA: ICON MATA DI DALAM KOLOM INPUT */
+        .password-input-container {
+            position: relative; /* Ini adalah wrapper untuk input dan ikon */
+            width: 100%; /* Memastikan lebar sesuai parent */
+            box-sizing: border-box; /* Pastikan padding dihitung dalam width */
+            /* Margin-bottom diatur oleh .form-group parent-nya */
+        }
+
+        /* Input password di dalam container */
+        .password-input-container input[type="password"] {
+            width: 100%;
+            padding-right: 45px; /* Memberi ruang untuk ikon di dalam input */
+            margin-bottom: 0; /* Pastikan tidak ada margin bawah di sini */
+        }
+
+        .toggle-password {
+            position: absolute; /* Ikon diposisikan absolut dalam .password-input-container */
+            right: 15px; /* Jarak dari kanan input */
+            top: 50%; /* Pusat vertikal dalam input field */
+            transform: translateY(-50%); /* Menyesuaikan posisi tepat di tengah vertikal */
+            cursor: pointer;
+            color: var(--dark-placeholder-color); /* Warna ikon mata */
+            transition: color 0.2s ease;
+            font-size: 1.1em;
+            z-index: 2; /* Pastikan ikon berada di atas input */
+        }
+
+        .toggle-password:hover {
+            color: var(--dark-card-text); /* Warna ikon mata saat hover */
+        }
+
+
+        .form-actions {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid var(--dark-card-border); /* Border di form actions */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 25px;
+            font-size: 1em;
+            font-weight: 600;
+            text-align: center;
+            border: none;
+            border-radius: 6px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+            width: 100%;
+            max-width: 250px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+        }
+
+        .btn-add-new {
+            background-color: var(--accent-green);
+            color: white;
+        }
+        .btn-add-new:hover {
+            background-color: #27AE60;
+        }
+        
+        .link-secondary {
+            color: var(--accent-blue); /* Tetap pakai accent-blue */
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        .link-secondary:hover {
+            color: #2980B9;
+            text-decoration: underline;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 900px) {
+            .admin-navbar {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 15px 20px;
+            }
+            .admin-navbar .nav-links {
+                margin-top: 15px;
+                width: 100%;
+                justify-content: center;
+                gap: 10px;
+            }
+            .admin-navbar a {
+                padding: 8px 12px;
+                font-size: 0.95em;
+            }
+            .admin-container {
+                padding: 20px;
+                margin: 20px auto;
+                max-width: 700px;
+            }
+            .admin-header h1 {
+                font-size: 1.8em;
+            }
+            .form-card {
+                padding: 25px 30px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .admin-navbar .welcome-message {
+                font-size: 1.1em;
+                text-align: center;
+                width: 100%;
+                margin-bottom: 10px;
+            }
+            .admin-navbar .nav-links {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .admin-navbar a {
+                width: calc(100% - 20px);
+                text-align: center;
+                justify-content: center;
+            }
+            .admin-navbar a.logout-btn {
+                width: auto;
+                justify-content: center;
+            }
+            .admin-container {
+                padding: 15px;
+                margin: 15px auto;
+                max-width: 95%;
+            }
+            .admin-header {
+                flex-direction: column;
+                align-items: flex-start;
+                text-align: left;
+            }
+            .admin-header h1 {
+                font-size: 1.5em;
+                width: 100%;
+            }
+            .form-card {
+                padding: 20px;
+            }
+            .btn {
+                max-width: 100%;
+            }
+            /* Adjustments for password icon on small screens */
+            .password-input-container input[type="password"] {
+                padding-right: 40px; /* Sedikit kurang untuk mobile */
+            }
+            .toggle-password {
+                right: 10px; /* Sesuaikan jarak ikon dari kanan untuk mobile */
+            }
+            .form-group:not(:last-child) {
+                margin-bottom: 15px; /* Sesuaikan margin-bottom untuk mobile */
+            }
+            .form-group:has(.password-input-container) {
+                margin-bottom: 15px; /* Pastikan group password punya margin-bottom yang konsisten */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-navbar">
+        <div class="welcome-message">
+            <% if (typeof username !== 'undefined' && username) { %>
+                Halo, Admin <span style="font-weight: 700;"><%= username %></span>!
+            <% } else { %>
+                Admin Panel
+            <% } %>
+        </div>
+        <div class="nav-links">
+            <a href="/admin/dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+            <a href="/admin/users" class="active-nav"><i class="fas fa-users"></i> Kelola Users</a>
+            <a href="/admin/products"><i class="fas fa-box"></i> Kelola Products</a>
+            <a href="/admin/reviews"><i class="fas fa-star"></i> Kelola Review</a>
+            <a href="/admin/categories"><i class="fas fa-tags"></i> Kelola Kategori</a>
+            <a href="/admin/orders"><i class="fas fa-shopping-cart"></i> Kelola Pesanan</a>
+            <a href="/logout" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </div>
+    </div>
+
+    <div class="admin-container">
+        <div class="admin-header">
+            <h1><%= title %></h1>
+        </div>
+
+        <% if (typeof formError !== 'undefined' && formError) { %>
+            <div class="message-box error-message">
+                <i class="fas fa-exclamation-triangle"></i><span><%= formError %></span>
+            </div>
+        <% } %>
+
+        <div class="form-card"> <%# Card dalam dengan warna gelap %>
+            <form action="/admin/users/create" method="POST">
+                <div class="form-group">
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" name="username" value="<%= typeof formData !== 'undefined' && formData.username ? formData.username : '' %>" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" value="<%= typeof formData !== 'undefined' && formData.email ? formData.email : '' %>" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <div class="password-input-container">
+                        <input type="password" id="password" name="password" required>
+                        <i class="fas fa-eye toggle-password" id="togglePassword"></i>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="role_id">Role:</label>
+                    <select id="role_id" name="role_id" required>
+                        <option value="">Pilih Role</option>
+                        <% if (typeof roles !== 'undefined' && roles.length > 0) { %>
+                            <% roles.forEach(function(role) { %>
+                                <option value="<%= role.role_id %>" <%= typeof formData !== 'undefined' && formData.role_id == role.role_id ? 'selected' : '' %>>
+                                    <%= role.role_name %>
+                                </option>
+                            <% }); %>
+                        <% } %>
+                    </select>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-add-new">
+                        <i class="fas fa-plus" style="margin-right: 8px;"></i>Tambah Pengguna
+                    </button>
+                    <a href="/admin/users" class="link-secondary">Kembali ke Daftar Users</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function setupPasswordToggle(toggleId, passwordFieldId) {
+            const toggleButton = document.getElementById(toggleId);
+            const passwordInput = document.getElementById(passwordFieldId);
+
+            if (toggleButton && passwordInput) {
+                toggleButton.addEventListener('click', function () {
+                    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                    passwordInput.setAttribute('type', type);
+                    
+                    this.classList.toggle('fa-eye');
+                    this.classList.toggle('fa-eye-slash');
+                });
+            }
+        }
+
+        setupPasswordToggle('togglePassword', 'password');
+    </script>
+</body>
+</html>
