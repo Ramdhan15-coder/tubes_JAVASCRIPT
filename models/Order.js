@@ -66,7 +66,8 @@ const Order = {
 
   async findDetailsForSuccessPage(orderId) {
     try {
-      const sql = 'SELECT order_id, total_amount, order_date, status FROM orders WHERE order_id = ?';
+      // UBAH QUERY SQL DI SINI, TAMBAHKAN 'payment_proof_url'
+      const sql = 'SELECT order_id, total_amount, order_date, status, payment_proof_url FROM orders WHERE order_id = ?';
       const [rows] = await pool.promise().query(sql, [orderId]);
       return rows[0];
     } catch (error) {

@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="icon" href="https://example.com/favicon.ico" type="image/x-icon"> 
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body { 
+            font-family: 'Poppins', sans-serif;
+            padding-top: 70px; 
+            background-color: #f0f2f5; /* Warna latar belakang yang lebih lembut */
+        }
+
+        /* Navbar Styling (disamakan dengan halaman lain) */
+        .navbar {
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+        }
+        .navbar-brand {
+            font-weight: 700; 
+            font-size: 1.5rem;
+            color: #ffffff !important; 
+        }
+        .navbar-dark .navbar-nav .nav-link {
+            color: rgba(255, 255, 255, 0.85); 
+            transition: color 0.3s ease; 
+        }
+        .navbar-dark .navbar-nav .nav-link:hover {
+            color: #ffffff; 
+        }
+        .navbar-text {
+            color: rgba(255, 255, 255, 0.7); 
+            font-weight: 500;
+            display: flex; 
+            align-items: center;
+        }
+        .welcome-message-custom { 
+            display: flex; 
+            align-items: center; 
+            margin-right: auto; 
+        }
+        .welcome-message-custom .navbar-text {
+            margin-right: 0 !important; 
+        }
+        .badge-light {
+            background-color: #ffc107; 
+            color: #343a40; 
+            font-weight: 600;
+            margin-left: 5px; 
+        }
+        /* Style untuk link aktif di navbar */
+        .nav-item .nav-link.active {
+            color: #ffc107 !important; /* Warna kuning untuk link aktif */
+            font-weight: 600;
+        }
+
+
+        /* General Styling for Alerts */
+        .alert {
+            border-radius: 8px;
+            font-weight: 500;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        /* Edit Profile Card Styling */
+        .edit-profile-card { 
+            background-color: #ffffff; 
+            border-radius: 12px; /* Lebih bulat */
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1); /* Shadow lebih menonjol */
+            padding: 30px; 
+            margin-top: 20px; 
+            max-width: 800px; /* Batasi lebar untuk tampilan lebih baik */
+            margin-left: auto; /* Pusatkan card */
+            margin-right: auto; /* Pusatkan card */
+        }
+        .edit-profile-card h2 {
+            font-weight: 700; /* Lebih tebal */
+            color: #343a40;
+            border-bottom: 1px solid #e9ecef; /* Garis pemisah lebih lembut */
+            padding-bottom: 15px;
+            margin-bottom: 25px; /* Jarak dari field pertama */
+            font-size: 2em; /* Ukuran judul */
+            display: flex; /* Untuk ikon */
+            align-items: center;
+        }
+        .edit-profile-card hr {
+            border-top: 1px solid #e9ecef;
+            margin: 30px 0;
+        }
+        .form-group label {
+            font-weight: 500;
+            color: #555;
+            margin-bottom: 5px; /* Sedikit jarak dari input */
+            display: flex; /* Untuk ikon */
+            align-items: center;
+        }
+        .form-control {
+            border-radius: 8px; /* Sudut input lebih bulat */
+            border-color: #ced4da;
+            padding: 10px 15px; /* Padding lebih besar */
+            transition: all 0.2s ease;
+        }
+        .form-control:focus {
+            border-color: #80bdff;
+            box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+        }
+        .form-text.text-muted {
+            font-size: 0.85em; /* Ukuran teks bantuan lebih kecil */
+            margin-top: 5px;
+            color: #6c757d !important; /* Pastikan warna abu-abu */
+        }
+
+        /* Button Styling */
+        .btn-success {
+            background-color: #28a745;
+            border-color: #28a745;
+            font-weight: 600;
+            padding: 10px 25px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(40,167,69,0.2);
+            margin-right: 15px; /* Jarak antar tombol */
+        }
+        .btn-success:hover {
+            background-color: #218838;
+            border-color: #1e7e34;
+            box-shadow: 0 6px 15px rgba(40,167,69,0.3);
+            transform: translateY(-2px);
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+            border-color: #6c757d;
+            font-weight: 500;
+            padding: 10px 25px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(108,117,125,0.2);
+        }
+        .btn-secondary:hover {
+            background-color: #5a6268;
+            border-color: #545b62;
+            box-shadow: 0 6px 15px rgba(108,117,125,0.3);
+            transform: translateY(-2px);
+        }
+        .btn-link { /* Untuk link ubah password jika nanti ditambahkan */
+            font-weight: 500;
+            color: #007bff;
+        }
+
+        /* Footer Styling (disamakan dengan halaman lain) */
+        footer {
+            background-color: #343a40 !important; 
+            color: #f8f9fa; 
+            padding: 30px 0;
+            margin-top: 60px; 
+            box-shadow: 0 -2px 4px rgba(0,0,0,0.05);
+        }
+        footer small {
+            font-size: 0.9em;
+            color: #f8f9fa; /* Dipastikan putih murni */
+        }
+
+        /* Responsiveness adjustments */
+        @media (max-width: 768px) {
+            .edit-profile-card {
+                padding: 20px;
+                margin-left: 15px;
+                margin-right: 15px;
+            }
+            .edit-profile-card h2 {
+                font-size: 1.8em;
+                margin-bottom: 20px;
+            }
+            .form-group label {
+                font-size: 0.9em;
+            }
+            .form-text.text-muted {
+                font-size: 0.75em;
+            }
+            .btn-success, .btn-secondary {
+                width: 100%;
+                margin-right: 0;
+                margin-bottom: 10px; /* Jarak antar tombol di mobile */
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="/dashboard_user">Jaketku</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav ml-auto">
+                    <% if (typeof username !== 'undefined' && username) { %>
+                        <li class="nav-item welcome-message-custom"><span class="navbar-text mr-3"><i class="fas fa-user-circle mr-1"></i> Selamat datang, **<%= username %>**!</span></li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/keranjang">
+                                <i class="fas fa-shopping-cart"></i> Keranjang 
+                                <% if (typeof cartForNavbar !== 'undefined' && cartForNavbar.length > 0) { %>
+                                    <span class="badge badge-light"><%= cartForNavbar.length %></span>
+                                <% } %>
+                            </a>
+                        </li>
+                        <li class="nav-item"><a class="nav-link" href="/checkout/history"><i class="fas fa-history mr-1"></i> Riwayat Pesanan</a></li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/profil"><i class="fas fa-user mr-1"></i> Profil Saya</a> <%# Profil Saya dengan ikon dan aktif %>
+                        </li>
+                        <li class="nav-item"><a class="nav-link" href="/logout"><i class="fas fa-sign-out-alt mr-1"></i> Logout</a></li>
+                    <% } else { %>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/keranjang">
+                                <i class="fas fa-shopping-cart"></i> Keranjang 
+                                <% if (typeof cartForNavbar !== 'undefined' && cartForNavbar.length > 0) { %>
+                                    <span class="badge badge-light"><%= cartForNavbar.length %></span>
+                                <% } %>
+                            </a>
+                        </li>
+                        <li class="nav-item"><a class="nav-link" href="/login"><i class="fas fa-sign-in-alt mr-1"></i> Login</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/register"><i class="fas fa-user-plus mr-1"></i> Register</a></li>
+                    <% } %>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4 mb-5">
+        <%# Nampilin flash message kalau ada %>
+        <% if (typeof successMessage !== 'undefined' && successMessage) { %>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="fas fa-check-circle mr-2"></i> <%= successMessage %>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+        <% } %>
+        <% if (typeof errorMessage !== 'undefined' && errorMessage) { %>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="fas fa-exclamation-triangle mr-2"></i> <%= errorMessage %>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+        <% } %>
+        
+        <% if (typeof user !== 'undefined' && user) { %>
+            <div class="edit-profile-card">
+                <h2><i class="fas fa-user-edit mr-2"></i> Edit Profil</h2>
+                <hr>
+                <form action="/profil/edit" method="POST">
+                    <div class="form-group">
+                        <label><i class="fas fa-signature mr-2"></i> Username</label>
+                        <input type="text" class="form-control" value="<%= user.username %>" disabled>
+                        <small class="form-text text-muted">Username tidak dapat diubah.</small>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-envelope mr-2"></i> Email</label>
+                        <input type="email" class="form-control" value="<%= user.email %>" disabled>
+                        <small class="form-text text-muted">Email tidak dapat diubah.</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="full_name"><i class="fas fa-user-alt mr-2"></i> Nama Lengkap</label>
+                        <input type="text" class="form-control" id="full_name" name="full_name" value="<%= user.full_name || '' %>">
+                    </div>
+                    <div class="form-group">
+                        <label for="default_address"><i class="fas fa-map-marker-alt mr-2"></i> Alamat Default</label>
+                        <textarea class="form-control" id="default_address" name="default_address" rows="4"><%= user.default_address || '' %></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone_number"><i class="fas fa-phone-alt mr-2"></i> Nomor Telepon</label>
+                        <input type="tel" class="form-control" id="phone_number" name="phone_number" value="<%= user.phone_number || '' %>">
+                    </div>
+                    <button type="submit" class="btn btn-success"><i class="fas fa-save mr-2"></i> Simpan Perubahan</button>
+                    <a href="/profil" class="btn btn-secondary"><i class="fas fa-times-circle mr-2"></i> Batal</a>
+                </form>
+            </div>
+        <% } else { %>
+            <p class="alert alert-warning text-center"><i class="fas fa-exclamation-triangle mr-2"></i> Tidak dapat memuat data profil.</p>
+        <% } %>
+    </div>
+
+    <footer class="py-4 bg-dark mt-auto">
+        <div class="container text-center">
+            <small>Copyright &copy; Jaketku 2025 - Ramdhan Rullyansyah & Gemini</small>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

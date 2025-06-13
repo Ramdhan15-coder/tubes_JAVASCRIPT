@@ -62,9 +62,10 @@ const User = {
 
   async findById(userId) {
     try {
-      const sql = 'SELECT user_id, username, email, role_id FROM users WHERE user_id = ?';
+      // TAMBAHKAN 'password' DI SINI BIAR BISA DIPAKE BUAT UBAH PASSWORD
+      const sql = 'SELECT user_id, username, email, password, role_id, full_name, default_address, phone_number FROM users WHERE user_id = ?';
       const [rows] = await pool.promise().query(sql, [userId]);
-      return rows[0];
+      return rows[0]; // Kembalikan user pertama (atau undefined jika tidak ditemukan)
     } catch (error) {
       console.error('Error di model User.findById:', error);
       throw error;
@@ -110,7 +111,30 @@ const User = {
       console.error('Error di model User.countAll:', error);
       throw error;
     }
-  }
+  },
+
+  async updateProfileById(userId, profileData) {
+        const { full_name, default_address, phone_number } = profileData;
+        try {
+            const sql = 'UPDATE users SET full_name = ?, default_address = ?, phone_number = ?, updated_at = NOW() WHERE user_id = ?';
+            const [result] = await pool.promise().query(sql, [full_name, default_address, phone_number, userId]);
+            return result.affectedRows > 0;
+        } catch (error) {
+            console.error('Error di model User.updateProfileById:', error);
+            throw error;
+        }
+    },
+
+     async updatePasswordById(userId, newHashedPassword) {
+        try {
+            const sql = 'UPDATE users SET password = ?, updated_at = NOW() WHERE user_id = ?';
+            const [result] = await pool.promise().query(sql, [newHashedPassword, userId]);
+            return result.affectedRows > 0;
+        } catch (error) {
+            console.error('Error di model User.updatePasswordById:', error);
+            throw error;
+        }
+    }
 };
 
 module.exports = User;

@@ -1,27 +1,36 @@
 const Order = require('../models/Order.js');
+const User = require('../models/User.js');
 
 const orderController = {
-  renderCheckoutPage: (req, res) => {
-    const cart = req.session.cart || [];
+  renderCheckoutPage: async (req, res) => { // Tambahkan async
+    try {
+      const cart = req.session.cart || [];
 
-    if (cart.length === 0) {
-      req.session.errorMessage = 'Keranjang belanja Anda kosong. Silakan belanja dulu, Bro!';
-      return res.redirect('/keranjang');
+      if (cart.length === 0) {
+        req.session.errorMessage = 'Keranjang belanja Anda kosong. Silakan belanja dulu, Bro!';
+        return res.redirect('/keranjang');
+      }
+
+      // Ambil data user LENGKAP dari database pake ID dari session
+      const user = await User.findById(req.session.user.userId);
+
+      let totalBelanja = 0;
+      cart.forEach(item => {
+        totalBelanja += item.price * item.quantity;
+      });
+
+      res.render('checkout/index', {
+        title: 'Checkout Pesanan',
+        cartItems: cart,
+        totalBelanja: totalBelanja,
+        user: user, // Kirim objek user LENGKAP ke EJS
+        username: user.username // Untuk navbar
+      });
+    } catch (error) {
+      console.error("Error saat menampilkan halaman checkout:", error);
+      req.session.errorMessage = 'Gagal memuat halaman checkout.';
+      res.redirect('/keranjang');
     }
-
-    let totalBelanja = 0;
-    cart.forEach(item => {
-      totalBelanja += item.price * item.quantity;
-    });
-
-    const loggedInUser = req.session.user || {};
-
-    res.render('checkout/index', {
-      title: 'Checkout Pesanan',
-      cartItems: cart,
-      totalBelanja: totalBelanja,
-      username: loggedInUser.username,
-    });
   },
 
   placeOrder: async (req, res) => {

@@ -42,23 +42,42 @@ const adminProductController = {
     }
   },
 
-  handleCreateProduct: async (req, res) => {
-    const { name, description, price, stock_quantity, category_id, image_url, available_sizes, available_colors } = req.body;
-    const adminUsername = req.session.user ? req.session.user.username : 'Admin';
+    handleCreateProduct: async (req, res) => {
+    const { name, description, price, stock_quantity, category_id, available_sizes, available_colors } = req.body;
 
+    // Cek apakah ada file yang diupload. Jika ada, ambil path-nya.
+    let imageUrl = null; // Default null jika tidak ada gambar
+    if (req.file) {
+      // Buat path yang bisa diakses dari browser
+      imageUrl = `/uploads/products/${req.file.filename}`;
+    }
+
+    // ... (sisa kode validasi dan try-catch tetap sama) ...
     try {
       if (!name || !description || !price || !stock_quantity || !category_id) {
+        // ... (kode validasi yang sudah ada, tidak perlu diubah) ...
+        // Cuma pastiin kirim balik imageUrl yang mungkin null
         const categories = await Category.getAll();
         return res.status(400).render('admin/products/new_form', {
           title: 'Tambah Produk Jaket Baru',
           categories: categories,
-          username: adminUsername,
+          username: req.session.user.username,
           formData: req.body,
           formError: 'Field yang wajib (Nama, Deskripsi, Harga, Stok, Kategori) harus diisi!',
         });
       }
 
-      const productData = { name, description, price: parseFloat(price), stock_quantity: parseInt(stock_quantity), category_id: parseInt(category_id), image_url, available_sizes, available_colors };
+      // Siapkan data produk untuk disimpan, sekarang dengan imageUrl dari file upload
+      const productData = { 
+        name, 
+        description, 
+        price: parseFloat(price), 
+        stock_quantity: parseInt(stock_quantity), 
+        category_id: parseInt(category_id), 
+        image_url: imageUrl, // Pake imageUrl dari file upload
+        available_sizes, 
+        available_colors 
+      };
 
       await Product.create(productData);
 
@@ -66,19 +85,20 @@ const adminProductController = {
       res.redirect('/admin/products');
 
     } catch (error) {
-      console.error("Error saat membuat produk baru:", error);
+      // ... (kode catch error yang sudah ada, tidak perlu diubah) ...
+      // Cuma pastiin kirim balik imageUrl yang mungkin null
       const categories = await Category.getAll();
       let errorMessage = 'Gagal menambahkan produk baru. Terjadi kesalahan server.';
-
       res.status(500).render('admin/products/new_form', {
         title: 'Tambah Produk Jaket Baru',
         categories: categories,
-        username: adminUsername,
+        username: req.session.user.username,
         formData: req.body,
         formError: errorMessage,
       });
     }
   },
+
 
   renderEditProductForm: async (req, res) => {
     try {

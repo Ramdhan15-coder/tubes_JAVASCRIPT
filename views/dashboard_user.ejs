@@ -12,6 +12,7 @@
         /* Mengatur ulang font default body */
         body {
             font-family: 'Poppins', sans-serif;
+            padding-top: 70px; /* Kembali ke padding-top default karena hero section dihapus */
             background-color: #f0f2f5; /* Warna latar belakang yang lebih lembut */
         }
 
@@ -34,10 +35,16 @@
         .navbar-text {
             color: rgba(255, 255, 255, 0.7); /* Warna teks selamat datang lebih lembut */
             font-weight: 500;
+            display: flex; /* Tambahkan flexbox untuk ikon */
+            align-items: center;
         }
         .welcome-message-custom {
             display: flex; /* Menggunakan flexbox untuk penataan item nav */
             align-items: center; /* Pusatkan secara vertikal */
+            margin-right: auto; /* Agar teks ini berada di kiri pada ml-auto */
+        }
+        .welcome-message-custom .navbar-text {
+            margin-right: 0 !important; /* Hapus mr-3 dari navbar-text di sini agar tidak konflik dengan parent */
         }
         .badge-light {
             background-color: #ffc107; /* Warna badge kuning untuk keranjang */
@@ -46,17 +53,18 @@
             margin-left: 5px; /* Sedikit spasi dari teks "Keranjang" */
         }
 
-        /* Hero Section - Perubahan Warna Background Lebih Terang (Coklat Muda) */
+        /* Hero Section (DIHAPUS - CSS ini tidak lagi digunakan, tapi biarkan dulu untuk referensi) */
+        /*
         .hero-section {
-            background-color: #5b5b3d7e; /* Warna coklat muda lebih terang dari #8F8B74 */
-            color: #343a40; /* Ubah warna teks jadi gelap agar kontras dengan background terang */
+            background-color: #D7D4BF; 
+            color: #343a40; 
             padding: 80px 0;
             text-align: center;
             position: relative; 
             z-index: 1; 
 
-            margin-top: -70px; /* Negatif dari tinggi navbar fixed-top (default Bootstrap 70px) */
-            padding-top: 150px; /* Tambah padding atas untuk mengompensasi navbar + padding asli */
+            margin-top: -70px; 
+            padding-top: 150px; 
 
             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
         }
@@ -69,13 +77,14 @@
             font-size: 1.2rem;
             opacity: 0.9;
         }
+        */
 
         /* Notifikasi Flash Message */
         .alert {
             border-radius: 8px;
             font-weight: 500;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            margin-top: 20px; 
+            margin-top: 20px; /* Tambahkan margin atas untuk notifikasi */
         }
 
         /* Judul Halaman Utama */
@@ -85,7 +94,7 @@
             margin-bottom: 30px;
             position: relative; 
             padding-bottom: 10px;
-            margin-top: 40px; 
+            margin-top: 40px; /* Tetap pakai margin-top agar ada jarak dari navbar */
         }
         h1.text-center::after {
             content: '';
@@ -191,18 +200,20 @@
         /* Footer Styling */
         footer {
             background-color: #343a40 !important; 
-            color: #f8f9fa; 
+            color: #f8f9fa; /* Ini yang membuat teks footer terang */
             padding: 30px 0;
             margin-top: 60px; 
             box-shadow: 0 -2px 4px rgba(0,0,0,0.05);
         }
         footer small {
             font-size: 0.9em;
-            color: rgba(255, 255, 255, 0.7);
+            color: #f8f9fa; /* Dipastikan putih murni di sini */
         }
 
         /* Responsiveness adjustments */
         @media (max-width: 768px) {
+            /* Hapus hero-section dari media query juga karena sudah dihapus */
+            /*
             .hero-section {
                 padding: 60px 0;
                 margin-top: -56px; 
@@ -214,6 +225,7 @@
             .hero-section p {
                 font-size: 1rem;
             }
+            */
             .product-card {
                 margin-bottom: 20px;
             }
@@ -267,6 +279,9 @@
                             </a>
                         </li>
                         <li class="nav-item"><a class="nav-link" href="/checkout/history"><i class="fas fa-history mr-1"></i> Riwayat Pesanan</a></li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/profil"><i class="fas fa-user mr-1"></i> Profil Saya</a> <%# Profil Saya dengan ikon %>
+                        </li>
                         <li class="nav-item"><a class="nav-link" href="/logout"><i class="fas fa-sign-out-alt mr-1"></i> Logout</a></li>
                     <% } else { %>
                         <li class="nav-item">
@@ -285,12 +300,7 @@
         </div>
     </nav>
 
-    <div class="hero-section">
-        <div class="container">
-            <h1>Temukan Jaket Impianmu di Jaketku!</h1>
-            <p>Koleksi terbaru, gaya terkini, harga terbaik. Siap menemani setiap petualanganmu.</p>
-        </div>
-    </div>
+    <%# Hero Section DIHAPUS DARI SINI %>
 
     <div class="container mt-4">
         <% if (typeof successMessage !== 'undefined' && successMessage) { %>
@@ -349,7 +359,7 @@
     <footer class="py-4 bg-dark mt-auto">
         <div class="container text-center">
             <small>Copyright &copy; Jaketku 2025 - Ramdhan Rullyansyah</small>
-        </div>
+        * </div>
     </footer>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

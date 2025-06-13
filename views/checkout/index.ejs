@@ -1,148 +1,377 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title><%= title %></title>
-  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-  <style>
-    body { 
-      padding-top: 70px; 
-      background-color: #f8f9fa;
-    }
-    .order-summary-item {
-      display: flex;
-      justify-content: space-between;
-      padding: 8px 0;
-      border-bottom: 1px solid #eee;
-    }
-    .order-summary-item:last-child {
-      border-bottom: none;
-    }
-    .order-summary-item .item-name {
-      font-size: 0.9em;
-    }
-    .order-summary-item .item-qty {
-      font-size: 0.9em;
-      color: #6c757d;
-    }
-    .total-row {
-      font-weight: bold;
-      font-size: 1.2em;
-      margin-top: 10px;
-    }
-    .alert { margin-bottom: 20px; } /* Style buat alert biar ada margin bawah */
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="icon" href="https://example.com/favicon.ico" type="image/x-icon"> 
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body { 
+            font-family: 'Poppins', sans-serif;
+            padding-top: 70px; 
+            background-color: #f0f2f5; /* Warna latar belakang yang lebih lembut */
+        }
+
+        /* Navbar Styling (disamakan dengan halaman lain) */
+        .navbar {
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+        }
+        .navbar-brand {
+            font-weight: 700; 
+            font-size: 1.5rem;
+            color: #ffffff !important; 
+        }
+        .navbar-dark .navbar-nav .nav-link {
+            color: rgba(255, 255, 255, 0.85); 
+            transition: color 0.3s ease; 
+        }
+        .navbar-dark .navbar-nav .nav-link:hover {
+            color: #ffffff; 
+        }
+        .navbar-text {
+            color: rgba(255, 255, 255, 0.7); 
+            font-weight: 500;
+            display: flex; 
+            align-items: center;
+        }
+        .welcome-message-custom { 
+            display: flex; 
+            align-items: center; 
+            margin-right: auto; 
+        }
+        .welcome-message-custom .navbar-text {
+            margin-right: 0 !important; 
+        }
+        .badge-light {
+            background-color: #ffc107; 
+            color: #343a40; 
+            font-weight: 600;
+            margin-left: 5px; 
+        }
+        /* Style untuk link aktif di navbar */
+        .nav-item .nav-link.active {
+            color: #ffc107 !important; /* Warna kuning untuk link aktif */
+            font-weight: 600;
+        }
+
+
+        /* General Styling for Alerts */
+        .alert {
+            border-radius: 8px;
+            font-weight: 500;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        /* Page Title */
+        h1.mb-4 {
+            font-weight: 600;
+            color: #343a40;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        h1.mb-4::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 80px;
+            height: 4px;
+            background-color: #007bff;
+            border-radius: 2px;
+        }
+
+        /* Form Pengiriman */
+        .col-md-7 h3 {
+            font-weight: 600;
+            color: #343a40;
+            margin-bottom: 20px;
+        }
+        /* Style untuk teks kecil info otomatis */
+        .form-info-text {
+            font-size: 0.9em;
+            color: #6c757d;
+            margin-bottom: 15px; /* Jarak dari judul form */
+        }
+        .form-group label {
+            font-weight: 500;
+            color: #555;
+            margin-bottom: 5px; /* Sedikit jarak dari input */
+        }
+        .form-control {
+            border-radius: 8px; /* Sudut input lebih bulat */
+            border-color: #ced4da;
+            padding: 10px 15px; /* Padding lebih besar */
+            transition: all 0.2s ease;
+        }
+        .form-control:focus {
+            border-color: #80bdff;
+            box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+        }
+        form hr {
+            border-top: 1px solid #e9ecef;
+            margin: 30px 0;
+        }
+        form h3 {
+            font-weight: 600;
+            color: #343a40;
+            margin-bottom: 20px;
+        }
+        form p {
+            color: #555;
+            line-height: 1.6;
+        }
+        .btn-primary.btn-lg.btn-block {
+            background-color: #28a745; /* Warna hijau untuk konfirmasi */
+            border-color: #28a745;
+            font-size: 1.2em;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(40,167,69,0.2);
+        }
+        .btn-primary.btn-lg.btn-block:hover {
+            background-color: #218838;
+            border-color: #1e7e34;
+            box-shadow: 0 6px 15px rgba(40,167,69,0.3);
+            transform: translateY(-2px);
+        }
+
+        /* Ringkasan Pesanan */
+        .card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .card-header {
+            background-color: #343a40; /* Header card senada dengan navbar */
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 1.2em;
+            padding: 15px 20px;
+            border-top-left-radius: 12px; /* Ikuti border radius card */
+            border-top-right-radius: 12px;
+        }
+        .card-body {
+            padding: 20px;
+        }
+        .order-summary-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center; /* Pusatkan item secara vertikal */
+            padding: 12px 0; /* Padding lebih besar */
+            border-bottom: 1px solid #eee;
+            font-size: 1.0em; /* Ukuran font item */
+        }
+        .order-summary-item:last-child {
+            border-bottom: none;
+        }
+        .order-summary-item .item-name {
+            font-weight: 500;
+            color: #343a40;
+        }
+        .order-summary-item .item-qty {
+            font-size: 0.85em; /* Ukuran qty lebih kecil */
+            color: #6c757d;
+        }
+        .order-summary-item .item-price {
+            font-weight: 600;
+            color: #28a745; /* Warna hijau untuk harga item */
+            white-space: nowrap; /* Mencegah pecah baris */
+        }
+        .total-row {
+            font-weight: 700; /* Total lebih tebal */
+            font-size: 1.3em; /* Ukuran total lebih besar */
+            margin-top: 15px; /* Jarak lebih besar dari item terakhir */
+            color: #007bff; /* Warna biru untuk total akhir */
+        }
+        .total-row span {
+            color: #007bff; /* Pastikan warna biru juga di angka total */
+        }
+
+        /* Tombol Kembali ke Keranjang */
+        .btn-outline-secondary {
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin-top: 20px; /* Jarak dari card summary */
+        }
+        .btn-outline-secondary:hover {
+            background-color: #6c757d;
+            color: white;
+            box-shadow: 0 4px 10px rgba(108,117,125,0.2);
+        }
+
+        /* Footer Styling (disamakan dengan halaman lain) */
+        footer {
+            background-color: #343a40 !important; 
+            color: #f8f9fa; 
+            padding: 30px 0;
+            margin-top: 60px; 
+            box-shadow: 0 -2px 4px rgba(0,0,0,0.05);
+        }
+        footer small {
+            font-size: 0.9em;
+            color: #f8f9fa; /* Dipastikan putih murni di sini */
+        }
+
+        /* Responsiveness adjustments */
+        @media (max-width: 768px) {
+            .col-md-7, .col-md-5 {
+                margin-bottom: 30px; /* Jarak antar kolom di mobile */
+            }
+            .btn-primary.btn-lg.btn-block {
+                padding: 12px 20px;
+                font-size: 1.1em;
+            }
+            .card-header {
+                font-size: 1.1em;
+            }
+            .order-summary-item {
+                font-size: 0.9em;
+                padding: 10px 0;
+            }
+            .total-row {
+                font-size: 1.1em;
+            }
+        }
+    </style>
 </head>
 <body>
 
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-    <div class="container">
-      <a class="navbar-brand" href="/dashboard_user">Jaketku</a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarResponsive">
-        <ul class="navbar-nav ml-auto">
-          <% if (typeof username !== 'undefined' && username) { %>
-            <li class="nav-item" style="margin-right: auto;"><span class="navbar-text mr-3">Selamat datang, <%= username %>!</span></li>
-            <li class="nav-item"><a class="nav-link" href="/keranjang">Keranjang <% if (typeof cartForNavbar !== 'undefined' && cartForNavbar.length > 0) { %><span class="badge badge-light"><%= cartForNavbar.length %></span><% } %></a></li>
-            <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
-          <% } else { %>
-            <%# Pengguna tidak login tidak seharusnya bisa sampai ke checkout %>
-            <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
-          <% } %>
-        </ul>
-      </div>
-    </div>
-  </nav>
-
-  <div class="container mt-4 mb-5">
-    <h1 class="mb-4"><%= title %></h1>
-
-    <%# Nampilin flash message kalau ada %>
-    <% if (typeof successMessage !== 'undefined' && successMessage) { %>
-      <div class="alert alert-success alert-dismissible fade show" role="alert">
-        <%= successMessage %>
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-      </div>
-    <% } %>
-    <% if (typeof errorMessage !== 'undefined' && errorMessage) { %>
-      <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        <%= errorMessage %>
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-      </div>
-    <% } %>
-
-    <div class="row">
-      <div class="col-md-7 mb-4">
-        <h3>Informasi Pengiriman</h3>
-        <form action="/checkout/place_order" method="POST">
-          <div class="form-group">
-            <label for="shippingFullName">Nama Lengkap Penerima</label>
-            <input type="text" class="form-control" id="shippingFullName" name="shippingFullName" value="<%= username || '' %>" required>
-          </div>
-          <div class="form-group">
-            <label for="shippingAddress">Alamat Lengkap Pengiriman</label>
-            <textarea class="form-control" id="shippingAddress" name="shippingAddress" rows="4" placeholder="Nama Jalan, Nomor Rumah, RT/RW, Kelurahan, Kecamatan, Kota/Kabupaten, Provinsi, Kode Pos" required></textarea>
-          </div>
-          <div class="form-group">
-            <label for="shippingPhoneNumber">Nomor Telepon Penerima</label>
-            <input type="tel" class="form-control" id="shippingPhoneNumber" name="shippingPhoneNumber" placeholder="Contoh: 081234567890" required>
-          </div>
-          <div class="form-group">
-            <label for="orderNotes">Catatan untuk Penjual (Opsional)</label>
-            <textarea class="form-control" id="orderNotes" name="orderNotes" rows="2"></textarea>
-          </div>
-          
-          <hr>
-          <h3>Metode Pembayaran</h3>
-          <p>Saat ini kami hanya menerima pembayaran via Bank Transfer.</p>
-          <p>Instruksi pembayaran akan diberikan setelah Anda mengkonfirmasi pesanan.</p>
-          
-          <button type="submit" class="btn btn-primary btn-lg btn-block mt-4">Konfirmasi Pesanan & Lanjut Bayar</button>
-        </form>
-      </div>
-
-      <div class="col-md-5">
-        <div class="card">
-          <div class="card-header">
-            <h4>Ringkasan Pesanan Anda</h4>
-          </div>
-          <div class="card-body">
-            <% if (cartItems && cartItems.length > 0) { %>
-              <% cartItems.forEach(function(item) { %>
-                <div class="order-summary-item">
-                  <div>
-                    <span class="item-name"><%= item.name %></span><br>
-                    <span class="item-qty">Qty: <%= item.quantity %></span>
-                  </div>
-                  <span>Rp <%= new Intl.NumberFormat('id-ID').format(item.price * item.quantity) %></span>
-                </div>
-              <% }); %>
-              <hr>
-              <div class="order-summary-item total-row">
-                <span>Total Belanja:</span>
-                <span>Rp <%= new Intl.NumberFormat('id-ID').format(totalBelanja) %></span>
-              </div>
-            <% } else { %>
-              <p>Keranjang Anda kosong.</p>
-            <% } %>
-          </div>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="/dashboard_user">Jaketku</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav ml-auto">
+                    <% if (typeof username !== 'undefined' && username) { %>
+                        <li class="nav-item welcome-message-custom"><span class="navbar-text mr-3"><i class="fas fa-user-circle mr-1"></i> Selamat datang, **<%= username %>**!</span></li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/keranjang">
+                                <i class="fas fa-shopping-cart"></i> Keranjang 
+                                <% if (typeof cartForNavbar !== 'undefined' && cartForNavbar.length > 0) { %>
+                                    <span class="badge badge-light"><%= cartForNavbar.length %></span>
+                                <% } %>
+                            </a>
+                        </li>
+                        <li class="nav-item"><a class="nav-link" href="/checkout/history"><i class="fas fa-history mr-1"></i> Riwayat Pesanan</a></li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/profil"><i class="fas fa-user mr-1"></i> Profil Saya</a> <%# Profil Saya dengan ikon %>
+                        </li>
+                        <li class="nav-item"><a class="nav-link" href="/logout"><i class="fas fa-sign-out-alt mr-1"></i> Logout</a></li>
+                    <% } else { %>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/keranjang">
+                                <i class="fas fa-shopping-cart"></i> Keranjang 
+                                <% if (typeof cartForNavbar !== 'undefined' && cartForNavbar.length > 0) { %>
+                                    <span class="badge badge-light"><%= cartForNavbar.length %></span>
+                                <% } %>
+                            </a>
+                        </li>
+                        <li class="nav-item"><a class="nav-link" href="/login"><i class="fas fa-sign-in-alt mr-1"></i> Login</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/register"><i class="fas fa-user-plus mr-1"></i> Register</a></li>
+                    <% } %>
+                </ul>
+            </div>
         </div>
-        <a href="/keranjang" class="btn btn-outline-secondary btn-block mt-3">&laquo; Kembali ke Keranjang</a>
-      </div>
-    </div>
-  </div>
+    </nav>
 
-  <footer class="py-4 bg-light mt-auto">
-    <div class="container text-center">
-      <small>Copyright &copy; Jaketku 2025 - Ramdhan Rullyansyah</small>
-    </div>
-  </footer>
+    <div class="container mt-4 mb-5">
+        <h1 class="mb-4"><%= title %></h1>
 
-  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        <%# Nampilin flash message kalau ada %>
+        <% if (typeof successMessage !== 'undefined' && successMessage) { %>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="fas fa-check-circle mr-2"></i> <%= successMessage %>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+        <% } %>
+        <% if (typeof errorMessage !== 'undefined' && errorMessage) { %>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="fas fa-exclamation-triangle mr-2"></i> <%= errorMessage %>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+        <% } %>
+
+        <div class="row">
+            <div class="col-md-7 mb-4">
+                <h3><i class="fas fa-shipping-fast mr-2"></i> Informasi Pengiriman</h3>
+                <p class="form-info-text"><i class="fas fa-info-circle mr-1"></i> Data di bawah ini diisi otomatis dari profil Anda, tapi Anda bisa mengubahnya untuk pesanan ini.</p>
+                <form action="/checkout/place_order" method="POST">
+                    <div class="form-group">
+                        <label for="shippingFullName"><i class="fas fa-user-alt mr-2"></i> Nama Lengkap Penerima</label>
+                        <input type="text" class="form-control" id="shippingFullName" name="shippingFullName" value="<%= typeof user !== 'undefined' && user ? (user.full_name || user.username || '') : '' %>" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="shippingAddress"><i class="fas fa-map-marker-alt mr-2"></i> Alamat Lengkap Pengiriman</label>
+                        <textarea class="form-control" id="shippingAddress" name="shippingAddress" rows="4" placeholder="Isi alamat lengkap Anda di sini..." required><%= typeof user !== 'undefined' && user ? (user.default_address || '') : '' %></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="shippingPhoneNumber"><i class="fas fa-phone-alt mr-2"></i> Nomor Telepon Penerima</label>
+                        <input type="tel" class="form-control" id="shippingPhoneNumber" name="shippingPhoneNumber" value="<%= typeof user !== 'undefined' && user ? (user.phone_number || '') : '' %>" placeholder="Contoh: 081234567890" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="orderNotes"><i class="fas fa-sticky-note mr-2"></i> Catatan untuk Penjual (Opsional)</label>
+                        <textarea class="form-control" id="orderNotes" name="orderNotes" rows="2"></textarea>
+                    </div>
+                    
+                    <hr>
+                    <h3><i class="fas fa-money-check-alt mr-2"></i> Metode Pembayaran</h3>
+                    <p>Saat ini kami hanya menerima pembayaran via Bank Transfer.</p>
+                    <p>Instruksi pembayaran akan diberikan setelah Anda mengkonfirmasi pesanan.</p>
+                    
+                    <button type="submit" class="btn btn-primary btn-lg btn-block mt-4">
+                        <i class="fas fa-clipboard-check mr-2"></i> Konfirmasi Pesanan & Lanjut Bayar
+                    </button>
+                </form>
+            </div>
+
+            <div class="col-md-5">
+                <div class="card">
+                    <div class="card-header">
+                        <h4><i class="fas fa-file-invoice mr-2"></i> Ringkasan Pesanan Anda</h4>
+                    </div>
+                    <div class="card-body">
+                        <% if (cartItems && cartItems.length > 0) { %>
+                            <% cartItems.forEach(function(item) { %>
+                                <div class="order-summary-item">
+                                    <div>
+                                        <span class="item-name"><%= item.name %></span><br>
+                                        <span class="item-qty">Qty: <%= item.quantity %></span>
+                                    </div>
+                                    <span class="item-price">Rp <span class="price-format"><%= new Intl.NumberFormat('id-ID').format(item.price * item.quantity) %></span></span>
+                                </div>
+                            <% }); %>
+                            <hr>
+                            <div class="order-summary-item total-row">
+                                <span>Total Belanja:</span>
+                                <span>Rp <span class="price-format"><%= new Intl.NumberFormat('id-ID').format(totalBelanja) %></span></span>
+                            </div>
+                        <% } else { %>
+                            <p class="alert alert-info text-center"><i class="fas fa-info-circle mr-2"></i> Keranjang Anda kosong. Tidak ada yang bisa di-checkout.</p>
+                        <% } %>
+                    </div>
+                </div>
+                <a href="/keranjang" class="btn btn-outline-secondary btn-block mt-3"><i class="fas fa-arrow-left mr-2"></i> Kembali ke Keranjang</a>
+            </div>
+        </div>
+    </div>
+
+    <footer class="py-4 bg-dark mt-auto">
+        <div class="container text-center">
+            <small>Copyright &copy; Jaketku 2025 - Ramdhan Rullyansyah</small>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

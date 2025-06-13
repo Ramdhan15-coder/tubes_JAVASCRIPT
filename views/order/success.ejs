@@ -1,152 +1,402 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title><%= title %></title>
-  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-  <style>
-    body { 
-      padding-top: 70px; 
-      background-color: #f8f9fa;
-    }
-    .success-container {
-      max-width: 700px;
-      margin: 40px auto;
-      padding: 30px;
-      background-color: #ffffff;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      text-align: center;
-    }
-    .success-icon {
-      font-size: 4em;
-      color: #28a745;
-      margin-bottom: 20px;
-    }
-    .payment-instructions, .upload-form-section, .payment-proof-section {
-      margin-top: 30px;
-      padding: 20px;
-      background-color: #e9ecef;
-      border-radius: 5px;
-      text-align: left;
-    }
-    .payment-instructions strong {
-      display: block;
-      margin-bottom: 5px;
-    }
-    .uploaded-proof-img {
-      max-width: 100%;
-      height: auto;
-      margin-top: 15px;
-      border: 1px solid #ddd;
-      padding: 5px;
-    }
-    .alert { margin-top: 20px; } /* Pastikan alert notifikasi juga terlihat jelas */
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="icon" href="https://example.com/favicon.ico" type="image/x-icon"> 
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body { 
+            font-family: 'Poppins', sans-serif;
+            padding-top: 70px; 
+            background-color: #f0f2f5; /* Warna latar belakang yang lebih lembut */
+        }
+
+        /* Navbar Styling (disamakan dengan halaman lain) */
+        .navbar {
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+        }
+        .navbar-brand {
+            font-weight: 700; 
+            font-size: 1.5rem;
+            color: #ffffff !important; 
+        }
+        .navbar-dark .navbar-nav .nav-link {
+            color: rgba(255, 255, 255, 0.85); 
+            transition: color 0.3s ease; 
+        }
+        .navbar-dark .navbar-nav .nav-link:hover {
+            color: #ffffff; 
+        }
+        .navbar-text {
+            color: rgba(255, 255, 255, 0.7); 
+            font-weight: 500;
+            display: flex; 
+            align-items: center;
+        }
+        .welcome-message-custom { 
+            display: flex; 
+            align-items: center; 
+            margin-right: auto; 
+        }
+        .welcome-message-custom .navbar-text {
+            margin-right: 0 !important; 
+        }
+        .badge-light {
+            background-color: #ffc107; 
+            color: #343a40; 
+            font-weight: 600;
+            margin-left: 5px; 
+        }
+        /* Style untuk link aktif di navbar */
+        .nav-item .nav-link.active {
+            color: #ffc107 !important; /* Warna kuning untuk link aktif */
+            font-weight: 600;
+        }
+
+
+        /* General Styling for Alerts */
+        .alert {
+            border-radius: 8px;
+            font-weight: 500;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .alert-danger { 
+            background-color: #f8d7da; 
+            color: #721c24; 
+            border-color: #f5c6cb; 
+        }
+        .alert-success { 
+            background-color: #d4edda;
+            color: #155724;
+            border-color: #c3e6cb;
+        }
+
+
+        /* Success Container Styling */
+        .success-container {
+            max-width: 800px; /* Lebar lebih besar */
+            margin: 40px auto;
+            padding: 30px;
+            background-color: #ffffff;
+            border-radius: 12px; /* Lebih bulat */
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1); /* Shadow lebih menonjol */
+            text-align: center;
+        }
+        .success-container h1 {
+            font-weight: 700;
+            color: #343a40;
+            margin-bottom: 20px;
+            font-size: 2.5em;
+        }
+        .success-icon {
+            font-size: 4.5em; /* Ikon lebih besar */
+            color: #28a745; /* Warna hijau sukses */
+            margin-bottom: 20px;
+            display: block; /* Agar center */
+        }
+        .success-container p {
+            font-size: 1.1em;
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+        .success-container strong {
+            color: #343a40;
+            font-weight: 600;
+        }
+        .success-container .price-display { /* Untuk total tagihan */
+            font-size: 1.5em;
+            font-weight: 700;
+            color: #007bff; /* Warna biru untuk total */
+            margin-bottom: 25px;
+            display: block;
+        }
+
+
+        /* Section Styling (Instructions, Upload Form, Proof Display) */
+        .payment-instructions, .upload-form-section, .payment-proof-section {
+            margin-top: 35px; /* Jarak antar bagian */
+            padding: 25px; /* Padding lebih besar */
+            background-color: #f8f9fa; /* Background lebih terang dari sebelumnya */
+            border-radius: 8px; /* Lebih bulat */
+            text-align: left;
+            border: 1px solid #e9ecef; /* Border tipis */
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .payment-instructions h5, .upload-form-section h5, .payment-proof-section h5 {
+            font-weight: 600;
+            color: #343a40;
+            margin-bottom: 15px;
+            display: flex; /* Untuk ikon */
+            align-items: center;
+        }
+        .payment-instructions p, .payment-proof-section p {
+            color: #555;
+            line-height: 1.6;
+        }
+        .payment-instructions strong { /* Untuk nomor rekening */
+            display: block;
+            margin-bottom: 5px;
+            color: #007bff; /* Warna biru untuk nomor rekening */
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+        .payment-instructions .badge, .payment-proof-section .badge {
+            font-size: 0.9em;
+            padding: 0.4em 0.8em;
+            border-radius: 0.3rem;
+            font-weight: 600;
+        }
+        /* Perbarui warna badge status agar konsisten */
+        .badge-warning { background-color: #ffc107; color: #212529; } /* Kuning */
+        .badge-info { background-color: #17a2b8; color: white; } /* Biru Info */
+        .badge-secondary { background-color: #6c757d; color: white; } /* Abu-abu */
+
+
+        /* Upload Form */
+        .form-group label {
+            font-weight: 500;
+            color: #555;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+        }
+        .form-control-file {
+            padding: 8px 0;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            background-color: #fff;
+            transition: border-color 0.2s ease;
+        }
+        .form-control-file:focus {
+            border-color: #80bdff;
+            box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+        }
+        .btn-info { /* Tombol Upload Bukti */
+            background-color: #17a2b8;
+            border-color: #17a2b8;
+            font-weight: 600;
+            padding: 10px 25px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(23,162,184,0.2);
+        }
+        .btn-info:hover {
+            background-color: #138496;
+            border-color: #117a8b;
+            box-shadow: 0 6px 15px rgba(23,162,184,0.3);
+            transform: translateY(-2px);
+        }
+
+        /* Uploaded Proof Display */
+        .uploaded-proof-img {
+            max-width: 100%;
+            height: auto;
+            margin-top: 15px;
+            border: 2px solid #ddd; /* Border lebih tebal */
+            padding: 8px; /* Padding lebih besar */
+            border-radius: 8px; /* Sudut gambar */
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        /* Bottom Buttons */
+        .btn-primary { /* Lanjutkan Belanja */
+            background-color: #007bff;
+            border-color: #007bff;
+            font-weight: 600;
+            padding: 12px 25px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0,123,255,0.2);
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+            box-shadow: 0 6px 15px rgba(0,123,255,0.3);
+            transform: translateY(-2px);
+        }
+        .btn-outline-secondary { /* Lihat Pesanan Saya (jika ada) */
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        .btn-outline-secondary:hover {
+            background-color: #6c757d;
+            color: white;
+            box-shadow: 0 4px 10px rgba(108,117,125,0.2);
+        }
+
+
+        /* Footer Styling (disamakan dengan halaman lain) */
+        footer {
+            background-color: #343a40 !important; 
+            color: #f8f9fa; 
+            padding: 30px 0;
+            margin-top: 60px; 
+            box-shadow: 0 -2px 4px rgba(0,0,0,0.05);
+        }
+        footer small {
+            font-size: 0.9em;
+            color: #f8f9fa; /* Dipastikan putih murni */
+        }
+
+        /* Responsiveness adjustments */
+        @media (max-width: 768px) {
+            .success-container {
+                margin: 20px 15px;
+                padding: 20px;
+            }
+            .success-container h1 {
+                font-size: 2em;
+            }
+            .success-icon {
+                font-size: 4em;
+            }
+            .payment-instructions, .upload-form-section, .payment-proof-section {
+                padding: 20px;
+                margin-top: 25px;
+            }
+            .payment-instructions h5, .upload-form-section h5, .payment-proof-section h5 {
+                font-size: 1.1em;
+            }
+            .payment-instructions p, .payment-proof-section p {
+                font-size: 0.95em;
+            }
+            .btn-info, .btn-primary, .btn-outline-secondary {
+                width: 100%;
+                margin-top: 10px;
+                margin-left: 0;
+                margin-right: 0;
+            }
+        }
+    </style>
 </head>
 <body>
 
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-    <div class="container">
-      <a class="navbar-brand" href="/dashboard_user">Jaketku</a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarResponsive">
-        <ul class="navbar-nav ml-auto">
-          <% if (typeof username !== 'undefined' && username) { %>
-            <li class="nav-item" style="margin-right: auto;"><span class="navbar-text mr-3">Selamat datang, <%= username %>!</span></li>
-            <li class="nav-item"><a class="nav-link" href="/keranjang">Keranjang <% if (typeof cartForNavbar !== 'undefined' && cartForNavbar.length > 0) { %><span class="badge badge-light"><%= cartForNavbar.length %></span><% } %></a></li>
-            <li class="nav-item"><a class="nav-link" href="/checkout/history">Riwayat Pesanan</a></li> <%# TAMBAHKAN INI %>
-            <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
-          <% } else { %>
-            <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
-          <% } %>
-        </ul>
-      </div>
-    </div>
-  </nav>
-
-  <div class="container">
-    <div class="success-container">
-      <div class="success-icon">✓</div>
-      <h1><%= title %></h1>
-
-      <%# Notifikasi Flash Message (dari proses upload atau lainnya) %>
-      <% if (typeof successMessage !== 'undefined' && successMessage) { %>
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-          <%= successMessage %>
-          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        </div>
-      <% } %>
-      <% if (typeof errorMessage !== 'undefined' && errorMessage) { %>
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-          <%= errorMessage %>
-          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        </div>
-      <% } %>
-
-      <% if (typeof order !== 'undefined' && order) { %>
-        <p>Nomor Pesanan Anda: <strong>#<%= order.order_id %></strong></p>
-        <p>Total Tagihan: <strong style="color: #dc3545;">Rp <%= new Intl.NumberFormat('id-ID').format(order.total_amount) %></strong></p>
-
-        <div class="payment-instructions">
-          <h5>Instruksi Pembayaran:</h5>
-          <p>Silakan lakukan pembayaran sejumlah total tagihan ke salah satu rekening berikut:</p>
-          <p>
-            <strong>Bank BCA:</strong> 123-456-7890 a/n Jaketku Keren Sejahtera<br>
-            <strong>Bank Mandiri:</strong> 098-765-4321 a/n PT Jaketku Jaya Abadi
-          </p>
-          <p>Status Pesanan Saat Ini: <span class="badge badge-warning"><%= order.status.replace('_', ' ').toUpperCase() %></span></p>
-        </div>
-
-        <%# BAGIAN UPLOAD BUKTI PEMBAYARAN %>
-        <% if (order.status === 'pending_payment') { %>
-          <div class="upload-form-section">
-            <h5>Upload Bukti Pembayaran Anda</h5>
-            <form action="/checkout/upload-bukti/<%= order.order_id %>" method="POST" enctype="multipart/form-data">
-              <div class="form-group">
-                <label for="buktiPembayaran">Pilih file gambar (JPG, PNG, maks 5MB):</label>
-                <input type="file" class="form-control-file" id="buktiPembayaran" name="buktiPembayaran" accept="image/jpeg, image/png, image/gif" required>
-              </div>
-              <button type="submit" class="btn btn-info">Upload Bukti</button>
-            </form>
-          </div>
-        <% } else if (order.payment_proof_url) { %>
-          <div class="payment-proof-section">
-            <h5>Bukti Pembayaran Anda</h5>
-            <p>Status: <span class="badge badge-info"><%= order.status.replace('_', ' ').toUpperCase() %></span>. Terima kasih, bukti pembayaran Anda sedang kami verifikasi.</p>
-            <img src="<%= order.payment_proof_url %>" alt="Bukti Pembayaran untuk Order #<%= order.order_id %>" class="uploaded-proof-img">
-          </div>
-        <% } else if (order.status !== 'pending_payment' && !order.payment_proof_url) { %>
-            <div class="payment-proof-section">
-                <p>Status Pesanan: <span class="badge badge-secondary"><%= order.status.replace('_', ' ').toUpperCase() %></span></p>
-                <p><em>Anda belum mengupload bukti pembayaran atau pesanan sedang dalam status lain.</em></p>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="/dashboard_user">Jaketku</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav ml-auto">
+                    <% if (typeof username !== 'undefined' && username) { %>
+                        <li class="nav-item welcome-message-custom"><span class="navbar-text mr-3"><i class="fas fa-user-circle mr-1"></i> Selamat datang, **<%= username %>**!</span></li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/keranjang">
+                                <i class="fas fa-shopping-cart"></i> Keranjang 
+                                <% if (typeof cartForNavbar !== 'undefined' && cartForNavbar.length > 0) { %>
+                                    <span class="badge badge-light"><%= cartForNavbar.length %></span>
+                                <% } %>
+                            </a>
+                        </li>
+                        <li class="nav-item"><a class="nav-link" href="/checkout/history"><i class="fas fa-history mr-1"></i> Riwayat Pesanan</a></li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/profil"><i class="fas fa-user mr-1"></i> Profil Saya</a> 
+                        </li>
+                        <li class="nav-item"><a class="nav-link" href="/logout"><i class="fas fa-sign-out-alt mr-1"></i> Logout</a></li>
+                    <% } else { %>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/keranjang">
+                                <i class="fas fa-shopping-cart"></i> Keranjang 
+                                <% if (typeof cartForNavbar !== 'undefined' && cartForNavbar.length > 0) { %>
+                                    <span class="badge badge-light"><%= cartForNavbar.length %></span>
+                                <% } %>
+                            </a>
+                        </li>
+                        <li class="nav-item"><a class="nav-link" href="/login"><i class="fas fa-sign-in-alt mr-1"></i> Login</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/register"><i class="fas fa-user-plus mr-1"></i> Register</a></li>
+                    <% } %>
+                </ul>
             </div>
-        <% } %>
-        <%# SELESAI BAGIAN UPLOAD %>
+        </div>
+    </nav>
 
-      <% } else { %>
-        <p class="text-danger">Detail pesanan tidak dapat dimuat.</p>
-      <% } %>
+    <div class="container">
+        <div class="success-container">
+            <div class="success-icon"><i class="fas fa-check-circle"></i></div> <%# Mengganti teks '✓' dengan ikon Font Awesome %>
+            <h1><%= title %></h1>
 
-      <div class="mt-4">
-        <a href="/dashboard_user" class="btn btn-primary">Lanjutkan Belanja</a>
-        <%# Nanti bisa ada link ke halaman "Pesanan Saya" %>
-        <%# <a href="/pesanan" class="btn btn-outline-secondary ml-2">Lihat Pesanan Saya</a> %>
-      </div>
+            <%# Notifikasi Flash Message (dari proses upload atau lainnya) %>
+            <% if (typeof successMessage !== 'undefined' && successMessage) { %>
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="fas fa-check-circle mr-2"></i> <%= successMessage %>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                </div>
+            <% } %>
+            <% if (typeof errorMessage !== 'undefined' && errorMessage) { %>
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fas fa-exclamation-triangle mr-2"></i> <%= errorMessage %>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                </div>
+            <% } %>
+
+            <% if (typeof order !== 'undefined' && order) { %>
+                <p>Nomor Pesanan Anda: <strong>#<%= order.order_id %></strong></p>
+                <p class="price-display">Total Tagihan: <strong>Rp <span class="price-format"><%= new Intl.NumberFormat('id-ID').format(order.total_amount) %></span></strong></p>
+
+                <div class="payment-instructions">
+                    <h5><i class="fas fa-hand-holding-usd mr-2"></i> Instruksi Pembayaran:</h5>
+                    <p>Silakan lakukan pembayaran sejumlah total tagihan ke salah satu rekening berikut:</p>
+                    <p>
+                        <strong><i class="fas fa-university mr-2"></i> Bank BCA:</strong> 123-456-7890 a/n Jaketku Keren Sejahtera<br>
+                        <strong><i class="fas fa-university mr-2"></i> Bank Mandiri:</strong> 098-765-4321 a/n PT Jaketku Jaya Abadi
+                    </p>
+                    <p>Status Pesanan Saat Ini: <span class="badge badge-warning"><%= order.status.replace(/_/g, ' ').toUpperCase() %></span></p>
+                </div>
+
+                <%# BAGIAN UPLOAD BUKTI PEMBAYARAN %>
+                <% if (order.status === 'pending_payment') { %>
+                    <div class="upload-form-section">
+                        <h5><i class="fas fa-upload mr-2"></i> Upload Bukti Pembayaran Anda</h5>
+                        <form action="/checkout/upload-bukti/<%= order.order_id %>" method="POST" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <label for="buktiPembayaran"><i class="fas fa-file-image mr-2"></i> Pilih file gambar (JPG, PNG, GIF, maks 5MB):</label>
+                                <input type="file" class="form-control-file" id="buktiPembayaran" name="buktiPembayaran" accept="image/jpeg, image/png, image/gif" required>
+                                <small class="form-text text-muted mt-2">Ukuran file maksimal 5MB. Format yang didukung: JPG, PNG, GIF.</small>
+                            </div>
+                            <button type="submit" class="btn btn-info"><i class="fas fa-paper-plane mr-2"></i> Upload Bukti</button>
+                        </form>
+                    </div>
+                <% } else if (order.payment_proof_url) { %>
+                    <div class="payment-proof-section">
+                        <h5><i class="fas fa-receipt mr-2"></i> Bukti Pembayaran Anda</h5>
+                        <p>Status: <span class="badge badge-info"><%= order.status.replace(/_/g, ' ').toUpperCase() %></span>. Terima kasih, bukti pembayaran Anda sedang kami verifikasi.</p>
+                        <img src="<%= order.payment_proof_url %>" alt="Bukti Pembayaran untuk Order #<%= order.order_id %>" class="uploaded-proof-img">
+                    </div>
+                <% } else if (order.status !== 'pending_payment' && !order.payment_proof_url) { %>
+                    <div class="payment-proof-section">
+                        <p>Status Pesanan: <span class="badge badge-secondary"><%= order.status.replace(/_/g, ' ').toUpperCase() %></span></p>
+                        <p><em><i class="fas fa-info-circle mr-2"></i> Anda belum mengupload bukti pembayaran atau pesanan sedang dalam status lain.</em></p>
+                    </div>
+                <% } %>
+                <%# SELESAI BAGIAN UPLOAD %>
+
+            <% } else { %>
+                <p class="alert alert-danger text-center"><i class="fas fa-exclamation-triangle mr-2"></i> Detail pesanan tidak dapat dimuat.</p>
+            <% } %>
+
+            <div class="mt-4">
+                <a href="/dashboard_user" class="btn btn-primary"><i class="fas fa-shopping-basket mr-2"></i> Lanjutkan Belanja</a>
+                <a href="/checkout/history" class="btn btn-outline-secondary ml-2"><i class="fas fa-history mr-2"></i> Lihat Riwayat Pesanan</a>
+            </div>
+        </div>
     </div>
-  </div>
 
-  <footer class="py-4 bg-light mt-auto">
-    <div class="container text-center">
-      <small>Copyright &copy; Jaketku 2025 - Ramdhan Rullyansyah & Gemini</small>
-    </div>
-  </footer>
+    <footer class="py-4 bg-dark mt-auto">
+        <div class="container text-center">
+            <small>Copyright &copy; Jaketku 2025 - Ramdhan Rullyansyah & Gemini</small>
+        </div>
+    </footer>
 
-  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

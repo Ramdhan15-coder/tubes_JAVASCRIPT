@@ -7,7 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
-        /* CSS Variables for a clean, consistent theme (disinkronkan dengan dashboard.ejs) */
+        /* CSS Variables for a clean, consistent theme */
         :root {
             --primary-dark-blue: #2c3e50;
             --secondary-dark-blue: #34495e; /* Warna mirip navbar untuk card dalam */
@@ -48,7 +48,7 @@
             overflow-x: hidden;
         }
 
-        /* --- NAVBAR STYLE (DISAMAKAN DENGAN DASHBOARD.EJS) --- */
+        /* --- NAVBAR STYLE --- */
         .admin-navbar {
             background-color: var(--primary-dark-blue);
             padding: 18px 30px;
@@ -117,10 +117,10 @@
         .admin-container {
             flex-grow: 1;
             padding: 30px;
-            max-width: 1000px; /* Lebar sama dengan form user */
+            max-width: 1000px;
             width: calc(100% - 80px);
             margin: 30px auto;
-            background-color: var(--card-bg); /* Card luar tetap putih */
+            background-color: var(--card-bg);
             border-radius: var(--border-radius-main);
             box-shadow: var(--shadow-light);
             min-height: calc(100vh - 120px);
@@ -133,7 +133,7 @@
             border-bottom: 2px solid var(--border-color);
             padding-bottom: 15px;
             display: flex;
-            justify-content: center; /* Tetap di tengah untuk halaman form */
+            justify-content: center;
             align-items: center;
             flex-wrap: wrap;
             gap: 10px;
@@ -149,7 +149,7 @@
             gap: 10px;
         }
         
-        /* Message Box Styling (disinkronkan) */
+        /* Message Box Styling */
         .message-box {
             padding: 15px 20px;
             border-radius: 8px;
@@ -168,7 +168,7 @@
             border: 1px solid #C3E6CB;
         }
 
-        .error-message { /* Ini akan menggantikan .error-message-form */
+        .error-message {
             background-color: var(--error-message-bg);
             color: var(--error-message-text);
             border: 1px solid #F5C6CB;
@@ -183,7 +183,7 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* --- FORM CARD DALAM (Disesuaikan seperti createuser) --- */
+        /* --- FORM CARD DALAM --- */
         .form-card {
             background-color: var(--secondary-dark-blue);
             padding: 30px 40px;
@@ -202,11 +202,17 @@
             font-weight: 600;
             color: var(--dark-card-text);
             font-size: 1.05em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         input[type="text"],
         input[type="number"],
         input[type="url"],
+        input[type="tel"],
+        input[type="email"],
+        input[type="password"],
         textarea,
         select {
             width: 100%;
@@ -220,11 +226,48 @@
             box-sizing: border-box;
         }
 
+        input[type="file"] {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--dark-card-border);
+            border-radius: 6px;
+            background-color: var(--dark-card-input-bg);
+            color: var(--dark-card-text);
+            font-size: 1em;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+            box-sizing: border-box;
+            cursor: pointer;
+            /* Styling untuk teks "No file chosen" */
+            color: var(--dark-card-text); /* Teks file input */
+        }
+        /* Styling untuk button 'Choose File' di dalam input type="file" */
+        input[type="file"]::file-selector-button {
+            /* Menggunakan warna yang lebih terang dari palet yang sudah ada */
+            background-color: var(--light-grey); /* Warna abu-abu terang */
+            color: var(--primary-dark-blue); /* Teks biru gelap */
+            border: 1px solid var(--border-color); /* Border senada */
+            padding: 8px 15px;
+            border-radius: 4px;
+            margin-right: 15px;
+            cursor: pointer;
+            transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+        }
+        input[type="file"]::file-selector-button:hover {
+            background-color: var(--card-bg); /* Sedikit lebih terang saat hover */
+            color: var(--primary-dark-blue);
+            border-color: var(--accent-blue);
+        }
+
+
         input[type="text"]:focus,
         input[type="number"]:focus,
         input[type="url"]:focus,
+        input[type="tel"]:focus,
+        input[type="email"]:focus,
+        input[type="password"]:focus,
         textarea:focus,
-        select:focus {
+        select:focus,
+        input[type="file"]:focus {
             border-color: var(--accent-blue);
             box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.35);
             background-color: #3e586c;
@@ -233,13 +276,19 @@
 
         /* Placeholder color for dark inputs */
         input::placeholder,
-        textarea::placeholder { /* Tambahkan textarea placeholder */
+        textarea::placeholder {
             color: rgba(255, 255, 255, 0.6);
+        }
+        /* Tambahkan styling untuk small text di form-group, terutama untuk input file */
+        .form-group small {
+            color: rgba(255, 255, 255, 0.7); /* Teks bantuan lebih terang */
+            margin-top: 5px; 
+            display: block;
         }
 
         textarea {
-            min-height: 120px; /* Sedikit lebih tinggi dari default */
-            resize: vertical; /* Hanya bisa diresize vertikal */
+            min-height: 120px;
+            resize: vertical;
         }
 
         .form-actions {
@@ -275,7 +324,7 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.25);
         }
 
-        .btn-add-new { /* Digunakan untuk tombol submit di form ini */
+        .btn-add-new {
             background-color: var(--accent-green);
             color: white;
         }
@@ -294,7 +343,7 @@
             text-decoration: underline;
         }
 
-        /* Responsive Adjustments (disinkronkan) */
+        /* Responsive Adjustments */
         @media (max-width: 900px) {
             .admin-navbar {
                 flex-direction: column;
@@ -389,35 +438,41 @@
 
     <div class="admin-container">
         <div class="admin-header">
-            <h1><%= title %></h1>
+            <h1><i class="fas fa-plus-circle"></i> <%= title %></h1>
         </div>
 
         <% if (typeof formError !== 'undefined' && formError) { %>
-            <div class="message-box error-message"> <%# Menggunakan class consistent: message-box dan error-message %>
+            <div class="message-box error-message"> 
                 <i class="fas fa-exclamation-triangle"></i><span><%= formError %></span>
             </div>
         <% } %>
+        <% if (typeof successMessage !== 'undefined' && successMessage) { %>
+            <div class="message-box success-message"> 
+                <i class="fas fa-check-circle"></i><span><%= successMessage %></span>
+            </div>
+        <% } %>
+
 
         <div class="form-card">
-            <form action="/admin/products/create" method="POST">
+            <form action="/admin/products/create" method="POST" enctype="multipart/form-data">
                 <div class="form-group">
-                    <label for="name">Nama Produk Jaket (Wajib):</label>
+                    <label for="name"><i class="fas fa-signature"></i> Nama Produk Jaket (Wajib):</label>
                     <input type="text" id="name" name="name" value="<%= formData.name || '' %>" required>
                 </div>
                 <div class="form-group">
-                    <label for="description">Deskripsi (Wajib):</label>
+                    <label for="description"><i class="fas fa-align-left"></i> Deskripsi (Wajib):</label>
                     <textarea id="description" name="description" required><%= formData.description || '' %></textarea>
                 </div>
                 <div class="form-group">
-                    <label for="price">Harga (Wajib, Angka):</label>
+                    <label for="price"><i class="fas fa-dollar-sign"></i> Harga (Wajib, Angka):</label>
                     <input type="number" id="price" name="price" step="500" min="0" value="<%= formData.price || '' %>" required>
                 </div>
                 <div class="form-group">
-                    <label for="stock_quantity">Stok (Wajib, Angka):</label>
+                    <label for="stock_quantity"><i class="fas fa-boxes"></i> Stok (Wajib, Angka):</label>
                     <input type="number" id="stock_quantity" name="stock_quantity" min="0" value="<%= formData.stock_quantity || '' %>" required>
                 </div>
                 <div class="form-group">
-                    <label for="category_id">Kategori (Wajib):</label>
+                    <label for="category_id"><i class="fas fa-tags"></i> Kategori (Wajib):</label>
                     <select id="category_id" name="category_id" required>
                         <option value="">-- Pilih Kategori --</option>
                         <% if (categories && categories.length > 0) { %>
@@ -430,15 +485,16 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="image_url">URL Gambar (Opsional, Contoh: /images/namafile.jpg):</label>
-                    <input type="text" id="image_url" name="image_url" placeholder="Contoh: /images/jaket.jpg atau https://example.com/gambar.jpg" value="<%= formData.image_url || '' %>">
+                    <label for="productImage"><i class="fas fa-image"></i> Gambar Produk (Opsional, maks 5MB):</label>
+                    <input type="file" id="productImage" name="productImage" accept="image/jpeg, image/png, image/gif">
+                    <small>Ukuran file maksimal 5MB. Format yang disarankan: JPG, PNG, GIF.</small>
                 </div>
                 <div class="form-group">
-                    <label for="available_sizes">Ukuran Tersedia (Opsional, pisahkan dengan koma):</label>
+                    <label for="available_sizes"><i class="fas fa-ruler-horizontal"></i> Ukuran Tersedia (Opsional, pisahkan dengan koma):</label>
                     <input type="text" id="available_sizes" name="available_sizes" placeholder="Contoh: S, M, L, XL" value="<%= formData.available_sizes || '' %>">
                 </div>
                 <div class="form-group">
-                    <label for="available_colors">Warna Tersedia (Opsional, pisahkan dengan koma):</label>
+                    <label for="available_colors"><i class="fas fa-palette"></i> Warna Tersedia (Opsional, pisahkan dengan koma):</label>
                     <input type="text" id="available_colors" name="available_colors" placeholder="Contoh: Hitam, Putih, Biru" value="<%= formData.available_colors || '' %>">
                 </div>
                 

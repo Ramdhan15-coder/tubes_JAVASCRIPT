@@ -3,6 +3,7 @@ const router = express.Router();
 
 
 const authController = require('../controllers/authController.js');
+const authMiddleware = require('../middlewares/authMiddleware.js');
 
 
 router.get('/register', authController.renderRegisterPage);
@@ -20,5 +21,14 @@ router.get('/dashboard_user', authController.renderDashboardUser);
 
 // GET /logout - Buat logout
 router.get('/logout', authController.handleLogout);
+
+router.get('/profil', authMiddleware.isLoggedIn, authController.renderUserProfile);
+
+router.get('/profil/edit', authMiddleware.isLoggedIn, authController.renderEditProfileForm);
+router.post('/profil/edit', authMiddleware.isLoggedIn, authController.handleUpdateProfile);
+
+router.get('/profil/ubah-password', authMiddleware.isLoggedIn, authController.renderChangePasswordForm);
+router.post('/profil/ubah-password', authMiddleware.isLoggedIn, authController.handleChangePassword);
+
 
 module.exports = router;
